@@ -1,0 +1,35 @@
+.TH PAD 1 2021-12-21 GNU
+
+.SH NAME
+pad \- Pad a string to a given length
+
+.SH SYNOPSIS
+.B pad STRING
+[\fB\-l\fR \fILENGTH\fR]
+[\fB\-c\fR \fICHAR\fR]
+[\fB\-m\fR \fIMODE\fR]
+[\fB\-s\fR \fISTRING\fR]
+
+.SH DESCRIPTION
+.B pad
+is a small program that uses libpadding to pad a string to a given length.
+
+.SH OPTIONS
+.TP
+.B \-l, \-\-length LENGTH
+sets the length of the result string (Default: 80)
+.TP
+.B \-c, \-\-character CHAR
+sets the char to use for padding (Default: ' ')
+.TP
+.B \-m, \-\-mode MODE
+sets the padding mode. Possible values are "left", "right" and "both" (Default: "both")
+.TP
+.B \-s, \-\- STRING
+sets the string that you want to pad. Use \-s explicitly if you want to pad an empty string.
+
+.SH BUGS
+Currently no bugs are known. Please send any found bugs to <zocker@10zen.eu>
+
+.SH AUTHOR
+zockerfreunde03/z0gg3r <zocker@10zen.eu>
