@@ -8,7 +8,7 @@ Depends on [libpadding](https://github.com/z0gg3r/padding)
 
 ## Building
 
-To build run '''mkdir build-aux && autoreconf -i; ./configure; make'''
+To build run ```mkdir build-aux && autoreconf -i; ./configure; make```
 
 ## Known Bugs
 
