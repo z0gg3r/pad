@@ -7,13 +7,16 @@
 #include <string.h>
 #include <padding.h>
 
+// Defaults if not specified by commandline
 #define DEFAULT_LENGTH 80
 #define DEFAULT_CHAR ' '
 #define DEFAULT_MODE 0x3
 
+// Helper flags for parsing
 int PARSE_ABORT = 0;
 int HELP_FLAG = 1;
 
+// Struct holding all possible options
 typedef struct options_t {
 	int length;
 	char _pad;
@@ -21,11 +24,17 @@ typedef struct options_t {
 	char *s;
 } options_t;
 
+// Functions
 options_t *parse(int, char **);
 char *last_standalone(int, char **);
 int hash(char *);
 void print_usage(char *);
 
+
+/*
+ * Prints a help message to stderr
+ * The passed string is treated as the name of the binary
+ */
 void print_usage(char *s)
 {
 	fprintf(stderr,
@@ -39,6 +48,17 @@ void print_usage(char *s)
 	       );
 }
 
+
+/*
+ * Parse options, if parsing is aborted print usage and exit
+ * If parsing is not aborted allocate a string of length + 1
+ * and call pad_{{MODE}}; Print the result and free the options
+ * and the allocated string.
+ *
+ * Returns 0 on success and HELP_FLAG on failure
+ * Per default HELP_FLAG is 1, but is set to 0 if 'help' was an
+ * option
+ */
 int main(int argc, char **argv)
 {
 	options_t *o = parse(argc, argv);
@@ -66,6 +86,15 @@ failure:
 	return HELP_FLAG;
 }
 
+/*
+ * parse parses argv to look for any encountered options
+ * If there is an error with the option, the error is printed
+ * to stderr and the parsing is aborted, in which case parse
+ * returns NULL. If the options is 'help' the parsing is also
+ * aborted, but no error is printed and HELP_FLAG is set to 0.
+ *
+ * RETURNS NULL IF ABORTED, CHECK PARSE_ABORT BEFORE USING RETURN VALUE
+ */
 options_t *parse(int argc, char **argv)
 {
 	options_t *o = malloc(sizeof(options_t));
@@ -153,17 +182,31 @@ help:
 	return NULL;
 }
 
+
+/*
+ * Searches the command line arguments for the last freestanding
+ * string, that is the last string that is not a recognized option
+ * or an argument to a recognized option. Since this is called after
+ * parsing we know that all set options are valid and we just can
+ * increment the index if they are encountered.
+ *
+ * Returns either the found string or an empty string.
+ * Since we cannot distinguish between an actual empty string as
+ * argument and the case of not having a last string.
+ * empty strings are treated as no argument in parse() and need to
+ * be passed to pad with -s instead.
+ */
 char *last_standalone(int argc, char **argv)
 {
 	char *s = "";
 
 	for (int i = 1; i < argc; ++i) {
 		if (!strcmp(argv[i], "-l")
-		                || !strcmp(argv[i], "--length")
-		                || !strcmp(argv[i], "-c")
-		                || !strcmp(argv[i], "--char")
-		                || !strcmp(argv[i], "-m")
-		                || !strcmp(argv[i], "--mode"))
+	        	|| !strcmp(argv[i], "--length")
+	                || !strcmp(argv[i], "-c")
+	                || !strcmp(argv[i], "--char")
+	                || !strcmp(argv[i], "-m")
+	                || !strcmp(argv[i], "--mode"))
 			++i;
 		else
 			s = argv[i];
@@ -173,6 +216,16 @@ char *last_standalone(int argc, char **argv)
 	return s;
 }
 
+/*
+ * A simple function that takes in a string as an argument
+ * and retunrs an integer. This is used to 'quickly' decide
+ * the requested padding mode. 
+ * Possible return values:
+ * 0x1 = left 
+ * 0x2 = right
+ * 0x3 = both
+ * 0x4 = invalid
+ */
 int hash(char *c)
 {
 	if (!strcmp(c, "left") || !strcmp(c, "LEFT")) {
