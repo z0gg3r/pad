@@ -70,9 +70,7 @@ int main(int argc, char **argv)
 	if (PARSE_ABORT)
 		goto failure;
 
-	char *p;
-	if (o->mode != 0x4)
-		p = calloc((o->length + 1), sizeof(char));
+	char *p = calloc((o->length + 1), sizeof(char));
 
 	if (o->mode == 0x1) {
 		pad_left(o->s, o->length, p, o->_pad);
@@ -90,13 +88,10 @@ int main(int argc, char **argv)
 		int half = ws.ws_col / 2;
 		int right = half + 40;
 		int left = half - 40;
-		for (int i = 0; i < right; ++i) {
-			if (i >= left)
-				printf("%s", o->s);
-			else
-				printf("%c", o->_pad);
+		for (int i = 0; i < left; ++i) {
+			printf("%c", o->_pad);
 		}
-		printf("\n");
+		printf("%s\n", o->s);
 		close(fd);
 		goto centered;
 	} else {
