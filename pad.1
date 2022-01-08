@@ -23,13 +23,19 @@ sets the length of the result string (Default: 80)
 sets the char to use for padding (Default: ' ')
 .TP
 .B \-m, \-\-mode MODE
-sets the padding mode. Possible values are "left", "right" and "both" (Default: "both")
+sets the padding mode. Possible values are "left", "right", "center" and "both" (Default: "both")
 .TP
 .B \-s, \-\- STRING
 sets the string that you want to pad. Use \-s explicitly if you want to pad an empty string.
 .TP
 .B \-h, \-\-help
 show help message
+
+.SH NOTES
+If
+.B pad
+is given the mode "center" a user specifed length will be ignored. It also currently does not use the 
+padding library and instead prints directly. This may change in the future.
 
 .SH BUGS
 Currently no bugs are known. Please send any found bugs to <zocker@10zen.eu>

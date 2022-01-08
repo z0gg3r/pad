@@ -5,6 +5,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/ioctl.h>
+#include <err.h>
+#include <fcntl.h>
+#include <unistd.h>
 #include <padding.h>
 
 // Defaults if not specified by commandline
@@ -39,7 +43,7 @@ void print_usage(char *s)
 {
 	fprintf(stderr,
 	        "%s [-l LENGTH] [-c CHAR] [-m MODE] STRING\n"
-	        "Modes are: left, right or both\n"
+	        "Modes are: left, right, center or both\n"
 	        "%s v%s - Send Bug reports to %s\n",
 	        s,
 	        PACKAGE,
@@ -66,22 +70,48 @@ int main(int argc, char **argv)
 	if (PARSE_ABORT)
 		goto failure;
 
-	char *p = calloc((o->length + 1), sizeof(char));
+	char *p;
+	if (o->mode != 0x4)
+		p = calloc((o->length + 1), sizeof(char));
 
-	if (o->mode == 0x1)
+	if (o->mode == 0x1) {
 		pad_left(o->s, o->length, p, o->_pad);
-	else if (o->mode == 0x2)
+	} else if (o->mode == 0x2) {
 		pad_right(o->s, o->length, p, o->_pad);
-	else
+	} else if (o-> mode == 0x4) {
+		struct winsize ws;
+		int fd;
+		fd = open("/dev/tty", O_RDWR);
+		if (fd < 0)
+			err(1, "/dev/tty");
+		if (ioctl(fd, TIOCGWINSZ, &ws) < 0)
+			err(1, "/dev/tty");
+
+		int half = ws.ws_col / 2;
+		int right = half + 40;
+		int left = half - 40;
+		for (int i = 0; i < right; ++i) {
+			if (i >= left)
+				printf("%s", o->s);
+			else
+				printf("%c", o->_pad);
+		}
+		printf("\n");
+		close(fd);
+		goto centered;
+	} else {
 		pad_both(o->s, o->length, p, o->_pad);
+	}
 
 	printf("%s\n", p);
 
+centered:
 	free(p);
 	free(o);
 	return 0;
 
 failure:
+	free(o);
 	print_usage(argv[0]);
 	return HELP_FLAG;
 }
@@ -153,7 +183,7 @@ options_t *parse(int argc, char **argv)
 		goto abort;
 	}
 
-	if (m_flag && o->mode == 0x4) {
+	if (m_flag && o->mode == 0x5) {
 		err = "Please provide a supported padding mode. See --help for a list of modes.";
 		goto abort;
 	}
@@ -224,7 +254,8 @@ char *last_standalone(int argc, char **argv)
  * 0x1 = left 
  * 0x2 = right
  * 0x3 = both
- * 0x4 = invalid
+ * 0x4 = center
+ * 0x5 = invalid
  */
 int hash(char *c)
 {
@@ -234,7 +265,9 @@ int hash(char *c)
 		return 0x2;
 	} else if (!strcmp(c, "both") || !strcmp(c, "BOTH")) {
 		return 0x3;
-	} else {
+	} else if (!strcmp(c, "center") || !strcmp(c, "CENTER")) {
 		return 0x4;
+	} else {
+		return 0x5;
 	}
 }
