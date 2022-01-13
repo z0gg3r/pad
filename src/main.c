@@ -104,7 +104,7 @@ int main(int argc, char **argv)
 	} else if (o-> mode == 0x4) {
 		// Mode 4 is still independent of libpadding...
 		int ws;
-		if ((ws = get_winsize() == -1)) {
+		if ((ws = get_winsize()) == -1) {
 			// There was some error during execution of get_winsize
 			// What went wrong was printed to stderr, so we just free
 			// p and goto failure
