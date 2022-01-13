@@ -33,6 +33,7 @@ options_t *parse(int, char **);
 char *last_standalone(int, char **);
 int hash(char *);
 void print_usage(char *);
+int get_winsize();
 
 
 /*
@@ -50,6 +51,30 @@ void print_usage(char *s)
 	        VERSION,
 	        PACKAGE_BUGREPORT
 	       );
+}
+
+/*
+ * Simple helper like function that returns the size
+ * of the terminal window (as columns).
+ */
+int get_winsize()
+{
+	struct winsize ws;
+	int fd;
+
+	if ((fd = open("/dev/tty", O_RDWR)) < 0) {
+		fprintf(stderr, "Failed to open /dev/tty");
+		return -1;
+	}
+	
+	if (ioctl(fd, TIOCGWINSZ, &ws) < 0) {
+		fprintf(stderr, "Failed to read terminal window size");
+		return -1;
+	}
+	
+	int tmp = ws.ws_col;
+	close(fd);
+	return tmp;
 }
 
 
@@ -77,22 +102,22 @@ int main(int argc, char **argv)
 	} else if (o->mode == 0x2) {
 		pad_right(o->s, o->length, p, o->_pad);
 	} else if (o-> mode == 0x4) {
-		struct winsize ws;
-		int fd;
-		fd = open("/dev/tty", O_RDWR);
-		if (fd < 0)
-			err(1, "/dev/tty");
-		if (ioctl(fd, TIOCGWINSZ, &ws) < 0)
-			err(1, "/dev/tty");
-
-		int half = ws.ws_col / 2;
+		// Mode 4 is still independent of libpadding...
+		int ws;
+		if ((ws = get_winsize() == -1)) {
+			// There was some error during execution of get_winsize
+			// What went wrong was printed to stderr, so we just free
+			// p and goto failure
+			free(p);
+			goto failure;
+		}
+		int half = ws / 2;
 		int right = half + 40;
 		int left = half - 40;
 		for (int i = 0; i < left; ++i) {
 			printf("%c", o->_pad);
 		}
 		printf("%s\n", o->s);
-		close(fd);
 		goto centered;
 	} else {
 		pad_both(o->s, o->length, p, o->_pad);
@@ -178,7 +203,7 @@ options_t *parse(int argc, char **argv)
 		goto abort;
 	}
 
-	if (m_flag && o->mode == 0x5) {
+	if (m_flag && !o->mode) {
 		err = "Please provide a supported padding mode. See --help for a list of modes.";
 		goto abort;
 	}
@@ -263,6 +288,6 @@ int hash(char *c)
 	} else if (!strcmp(c, "center") || !strcmp(c, "CENTER")) {
 		return 0x4;
 	} else {
-		return 0x5;
+		return 0x0;
 	}
 }
