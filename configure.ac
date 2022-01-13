@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ([2.71])
-AC_INIT([pad], [0.1.4], [zocker@10zen.eu])
+AC_INIT([pad], [0.1.5], [zocker@10zen.eu])
 AC_CONFIG_AUX_DIR([build-aux])
 AC_CONFIG_SRCDIR([src/main.c])
 AM_INIT_AUTOMAKE([foreign subdir-objects])
