@@ -18,7 +18,7 @@
 
 // Helper flags for parsing
 int PARSE_ABORT = 0;
-int HELP_FLAG = 1;
+int ABORT_WAS_ERROR = 1;
 
 // Struct holding all possible options
 typedef struct options_t {
@@ -84,9 +84,9 @@ int get_winsize()
  * and call pad_{{MODE}}; Print the result and free the options
  * and the allocated string.
  *
- * Returns 0 on success and HELP_FLAG on failure
- * Per default HELP_FLAG is 1, but is set to 0 if 'help' was an
- * option
+ * Returns 0 on success and ABORT_WAS_ERROR on failure
+ * Per default ABORT_WAS_ERROR is 1, but is set to 0 if 'help'
+ * aborted parsing
  */
 int main(int argc, char **argv)
 {
@@ -95,13 +95,16 @@ int main(int argc, char **argv)
 	if (PARSE_ABORT)
 		goto failure;
 
-	char *p = calloc((o->length + 1) * 5, sizeof(char));
+	// While we want length chars, they might be bigger
+	// than sizeof(char) (y'know UTF8 and stuff), so we
+	// just allocate 5 times length :).
+	char *p = calloc((o->length * 5) + 1, sizeof(char));
 
 	if (o->mode == 0x1) {
 		pad_left(o->s, o->length, p, o->_pad);
 	} else if (o->mode == 0x2) {
 		pad_right(o->s, o->length, p, o->_pad);
-	} else if (o-> mode == 0x4) {
+	} else if (o->mode == 0x4) {
 		// Mode 4 is still independent of libpadding...
 		int ws;
 		if ((ws = get_winsize()) == -1) {
@@ -113,18 +116,15 @@ int main(int argc, char **argv)
 		}
 		int half = ws / 2;
 		int left = half - 40;
-		for (int i = 0; i < left; ++i) {
-			printf("%s", o->_pad);
-		}
-		printf("%s\n", o->s);
-		goto centered;
+		free(p);
+		char *p = calloc((left * 5) + 1, sizeof(char));
+		pad_left(o->s, left, p, o->_pad);
 	} else {
 		pad_both(o->s, o->length, p, o->_pad);
 	}
 
 	printf("%s\n", p);
 
-centered:
 	free(p);
 	free(o);
 	return 0;
@@ -132,7 +132,7 @@ centered:
 failure:
 	free(o);
 	print_usage(argv[0]);
-	return HELP_FLAG;
+	return ABORT_WAS_ERROR;
 }
 
 /*
@@ -140,7 +140,7 @@ failure:
  * If there is an error with the option, the error is printed
  * to stderr and the parsing is aborted, in which case parse
  * returns NULL. If the options is 'help' the parsing is also
- * aborted, but no error is printed and HELP_FLAG is set to 0.
+ * aborted, but no error is printed and ABORT_WAS_ERROR is set to 0.
  *
  * RETURNS NULL IF ABORTED, CHECK PARSE_ABORT BEFORE USING RETURN VALUE
  */
@@ -174,7 +174,7 @@ options_t *parse(int argc, char **argv)
 				goto abort;
 			}
 		} else if (!strcmp(argv[i], "-h") || !strcmp(argv[i], "--help")) {
-			HELP_FLAG = 0;
+			ABORT_WAS_ERROR = 0;
 			goto help;
 		} else if (!strcmp(argv[i], "-m") || !strcmp(argv[i], "--mode")) {
 			if (argc > (i + 1)) {
