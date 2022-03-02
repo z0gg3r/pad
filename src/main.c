@@ -13,7 +13,7 @@
 
 // Defaults if not specified by commandline
 #define DEFAULT_LENGTH 80
-#define DEFAULT_CHAR ' '
+#define DEFAULT_CHAR " "
 #define DEFAULT_MODE 0x3
 
 // Helper flags for parsing
@@ -23,7 +23,7 @@ int HELP_FLAG = 1;
 // Struct holding all possible options
 typedef struct options_t {
 	int length;
-	char _pad;
+	char *_pad;
 	int mode;
 	char *s;
 } options_t;
@@ -95,7 +95,7 @@ int main(int argc, char **argv)
 	if (PARSE_ABORT)
 		goto failure;
 
-	char *p = calloc((o->length + 1), sizeof(char));
+	char *p = calloc((o->length + 1) * 5, sizeof(char));
 
 	if (o->mode == 0x1) {
 		pad_left(o->s, o->length, p, o->_pad);
@@ -112,10 +112,9 @@ int main(int argc, char **argv)
 			goto failure;
 		}
 		int half = ws / 2;
-		int right = half + 40;
 		int left = half - 40;
 		for (int i = 0; i < left; ++i) {
-			printf("%c", o->_pad);
+			printf("%s", o->_pad);
 		}
 		printf("%s\n", o->s);
 		goto centered;
@@ -168,7 +167,7 @@ options_t *parse(int argc, char **argv)
 		} else if (!strcmp(argv[i], "-c") || !strcmp(argv[i], "--char")) {
 			if (argc > (i + 1)) {
 				c_flag = 1;
-				o->_pad = argv[i + 1][0];
+				o->_pad = argv[i + 1];
 				++i;
 			} else {
 				err = "-c was set, but no char was given.";
