@@ -100,13 +100,15 @@ int main(int argc, char **argv)
 	// just allocate 5 times length :).
 	char *p = calloc((o->length * 5) + 1, sizeof(char));
 
-	if (o->mode == 0x1) {
+	switch (o->mode) {
+	case 0x01:
 		pad_left(o->s, o->length, p, o->_pad);
-	} else if (o->mode == 0x2) {
+		break;
+	case 0x02:
 		pad_right(o->s, o->length, p, o->_pad);
-	} else if (o->mode == 0x4) {
-		// Mode 4 is still independent of libpadding...
-		int ws;
+		break;
+	case 0x04: {
+		int ws = 0;
 		if ((ws = get_winsize()) == -1) {
 			// There was some error during execution of get_winsize
 			// What went wrong was printed to stderr, so we just free
@@ -114,12 +116,19 @@ int main(int argc, char **argv)
 			free(p);
 			goto failure;
 		}
+		
+		// We get half the screen size to get the middle
 		int half = ws / 2;
+		// And subtract 40 to get the starting point.
 		int left = half - 40;
+		// P was allocated with o->length, but we want `left` as length
+		// So we free p and allocate it again!
 		free(p);
 		char *p = calloc((left * 5) + 1, sizeof(char));
 		pad_left(o->s, left, p, o->_pad);
-	} else {
+		}
+		break;
+	default:
 		pad_both(o->s, o->length, p, o->_pad);
 	}
 
@@ -285,6 +294,8 @@ int hash(char *c)
 	} else if (!strcmp(c, "both") || !strcmp(c, "BOTH")) {
 		return 0x3;
 	} else if (!strcmp(c, "center") || !strcmp(c, "CENTER")) {
+		return 0x4;
+	} else if(!strcmp(c, "centre") || !strcmp(c, "CENTRE")) {
 		return 0x4;
 	} else {
 		return 0x0;
