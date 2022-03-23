@@ -121,10 +121,7 @@ int main(int argc, char **argv)
 		int half = ws / 2;
 		// And subtract 40 to get the starting point.
 		int left = half - 40;
-		// P was allocated with o->length, but we want `left` as length
-		// So we free p and allocate it again!
-		free(p);
-		char *p = calloc((left * 5) + 1, sizeof(char));
+		p = calloc((left * 5) + 1, sizeof(char));
 		pad_left(o->s, left, p, o->_pad);
 		}
 		break;
