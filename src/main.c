@@ -121,7 +121,7 @@ int main(int argc, char **argv)
 		int half = ws / 2;
 		// And subtract 40 to get the starting point.
 		int left = half - 40;
-		p = calloc((left * 5) + 1, sizeof(char));
+		p = realloc(p, (left * 5) + 1);
 		pad_left(o->s, left, p, o->_pad);
 		}
 		break;
