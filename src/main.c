@@ -43,14 +43,14 @@ int get_winsize();
 void print_usage(char *s)
 {
 	fprintf(stderr,
-	        "%s [-l LENGTH] [-c CHAR] [-m MODE] STRING\n"
-	        "Modes are: left, right, center or both\n"
-	        "%s v%s - Send Bug reports to %s\n",
-	        s,
-	        PACKAGE,
-	        VERSION,
-	        PACKAGE_BUGREPORT
-	       );
+		"%s [-l LENGTH] [-c CHAR] [-m MODE] STRING\n"
+		"Modes are: left, right, center or both\n"
+		"%s v%s - Send Bug reports to %s\n",
+		s,
+		PACKAGE,
+		VERSION,
+		PACKAGE_BUGREPORT
+	);
 }
 
 /*
