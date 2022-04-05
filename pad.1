@@ -23,7 +23,7 @@ sets the length of the result string (Default: 80)
 sets the char to use for padding (Default: ' ')
 .TP
 .B \-m, \-\-mode MODE
-sets the padding mode. Possible values are "left", "right", "center" and "both" (Default: "both")
+sets the padding mode. Possible values are "left", "right", "centre" and "both" (Default: "both")
 .TP
 .B \-s, \-\- STRING
 sets the string that you want to pad. Use \-s explicitly if you want to pad an empty string.
@@ -34,8 +34,9 @@ show help message
 .SH NOTES
 If
 .B pad
-is given the mode "center" a user specifed length will be ignored. It also currently does not use the 
-padding library and instead prints directly. This may change in the future.
+is given the mode "centre" a user specified length will be ignored.
+.TP
+Modes can be given both in lower- and uppercase, however mixed-casing is not recognised. Centre as well as the variant spelling center are recognised.
 
 .SH BUGS
 .B pad
