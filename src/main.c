@@ -121,12 +121,8 @@ int main(int argc, char **argv)
 		int half = ws / 2;
 		// And subtract 40 to get the starting point.
 		int left = half - 40;
-		//p = realloc(p, (left * 5) + 1);
-		//pad_left(o->s, left, p, o->_pad);
-		for (int i = 0; i < left; ++i)
-			printf(" ");
-
-		p = realloc(p, strlen(o->s) + 1);
+		p = realloc(p, ((strlen(o->s) + left) * 5) + 1);
+		pad_left("", left, p, o->_pad);
 		strncat(p, o->s, strlen(o->s));
 		}
 		break;
