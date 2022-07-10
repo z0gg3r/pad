@@ -120,6 +120,8 @@ int main(int argc, char **argv)
 		// We get half the screen size to get the middle
 		int half = ws / 2;
 		// And subtract 40 to get the starting point.
+		// NOTE: This assumes 80 character lines, but
+		//       that much should be expected c:
 		int left = half - 40;
 		p = realloc(p, ((strlen(o->s) + left) * 5) + 1);
 		pad_left("", left, p, o->_pad);
