@@ -145,7 +145,7 @@ failure:
 }
 
 /*
- * parse parses argv to look for any encountered options
+ * Parses argv to look for any encountered options
  * If there is an error with the option, the error is printed
  * to stderr and the parsing is aborted, in which case parse
  * returns NULL. If the options is 'help' the parsing is also
@@ -219,10 +219,13 @@ options_t *parse(int argc, char **argv)
 
 	if (!l_flag)
 		o->length = DEFAULT_LENGTH;
+
 	if (!c_flag)
 		o->_pad = DEFAULT_CHAR;
+
 	if (!m_flag)
 		o->mode = DEFAULT_MODE;
+
 	if (!s_flag) {
 		o->s = last_standalone(argc, argv);
 		if (!strcmp(o->s, "")) {
