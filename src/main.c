@@ -3,7 +3,11 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 #include <stdio.h>
+#ifndef _USE_JEMALLOC
 #include <stdlib.h>
+#else
+#include <jemalloc/jemalloc.h>
+#endif
 #include <string.h>
 #include <sys/ioctl.h>
 #include <err.h>
