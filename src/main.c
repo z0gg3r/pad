@@ -54,7 +54,7 @@ void print_usage(char *s)
 		PACKAGE,
 		VERSION,
 		PACKAGE_BUGREPORT
-	);
+	       );
 }
 
 /*
@@ -70,12 +70,12 @@ int get_winsize()
 		fprintf(stderr, "Failed to open /dev/tty");
 		return -1;
 	}
-	
+
 	if (ioctl(fd, TIOCGWINSZ, &ws) < 0) {
 		fprintf(stderr, "Failed to read terminal window size");
 		return -1;
 	}
-	
+
 	int tmp = ws.ws_col;
 	close(fd);
 	return tmp;
@@ -120,7 +120,7 @@ int main(int argc, char **argv)
 			free(p);
 			goto failure;
 		}
-		
+
 		// We get half the screen size to get the middle
 		int half = ws / 2;
 		// And subtract 40 to get the starting point.
@@ -130,8 +130,8 @@ int main(int argc, char **argv)
 		p = realloc(p, ((strlen(o->s) + left) * 5) + 1);
 		pad_left("", left, p, o->_pad);
 		strncat(p, o->s, strlen(o->s));
-		}
-		break;
+	}
+	break;
 	default:
 		pad_both(o->s, o->length, p, o->_pad);
 	}
@@ -267,11 +267,11 @@ char *last_standalone(int argc, char **argv)
 
 	for (int i = 1; i < argc; ++i) {
 		if (!strcmp(argv[i], "-l")
-	        	|| !strcmp(argv[i], "--length")
-	                || !strcmp(argv[i], "-c")
-	                || !strcmp(argv[i], "--char")
-	                || !strcmp(argv[i], "-m")
-	                || !strcmp(argv[i], "--mode"))
+		    || !strcmp(argv[i], "--length")
+		    || !strcmp(argv[i], "-c")
+		    || !strcmp(argv[i], "--char")
+		    || !strcmp(argv[i], "-m")
+		    || !strcmp(argv[i], "--mode"))
 			++i;
 		else
 			s = argv[i];
@@ -284,9 +284,9 @@ char *last_standalone(int argc, char **argv)
 /*
  * A simple function that takes in a string as an argument
  * and retunrs an integer. This is used to 'quickly' decide
- * the requested padding mode. 
+ * the requested padding mode.
  * Possible return values:
- * 0x1 = left 
+ * 0x1 = left
  * 0x2 = right
  * 0x3 = both
  * 0x4 = center
