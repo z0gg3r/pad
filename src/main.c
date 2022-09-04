@@ -39,7 +39,6 @@ int hash(char *);
 void print_usage(char *);
 int get_winsize();
 
-
 /*
  * Prints a help message to stderr
  * The passed string is treated as the name of the binary
@@ -50,11 +49,7 @@ void print_usage(char *s)
 		"%s [-l LENGTH] [-c CHAR] [-m MODE] STRING\n"
 		"Modes are: left, right, center or both\n"
 		"%s v%s - Send Bug reports to %s\n",
-		s,
-		PACKAGE,
-		VERSION,
-		PACKAGE_BUGREPORT
-	       );
+		s, PACKAGE, VERSION, PACKAGE_BUGREPORT);
 }
 
 /*
@@ -80,7 +75,6 @@ int get_winsize()
 	close(fd);
 	return tmp;
 }
-
 
 /*
  * Parse options, if parsing is aborted print usage and exit
@@ -130,8 +124,7 @@ int main(int argc, char **argv)
 		p = realloc(p, ((strlen(o->s) + left) * 5) + 1);
 		pad_left("", left, p, o->_pad);
 		strncat(p, o->s, strlen(o->s));
-	}
-	break;
+	} break;
 	default:
 		pad_both(o->s, o->length, p, o->_pad);
 	}
@@ -170,14 +163,15 @@ options_t *parse(int argc, char **argv)
 	for (int i = 1; i < argc; ++i) {
 		if (!strcmp(argv[i], "-l") || !strcmp(argv[i], "--length")) {
 			if (argc > (i + 1)) {
-				l_flag =  1;
+				l_flag = 1;
 				o->length = atoi(argv[i + 1]);
 				++i;
 			} else {
 				err = "-l was set, but no length was given.";
 				goto abort;
 			}
-		} else if (!strcmp(argv[i], "-c") || !strcmp(argv[i], "--char")) {
+		} else if (!strcmp(argv[i], "-c") ||
+			   !strcmp(argv[i], "--char")) {
 			if (argc > (i + 1)) {
 				c_flag = 1;
 				o->_pad = argv[i + 1];
@@ -186,10 +180,12 @@ options_t *parse(int argc, char **argv)
 				err = "-c was set, but no char was given.";
 				goto abort;
 			}
-		} else if (!strcmp(argv[i], "-h") || !strcmp(argv[i], "--help")) {
+		} else if (!strcmp(argv[i], "-h") ||
+			   !strcmp(argv[i], "--help")) {
 			ABORT_WAS_ERROR = 0;
 			goto help;
-		} else if (!strcmp(argv[i], "-m") || !strcmp(argv[i], "--mode")) {
+		} else if (!strcmp(argv[i], "-m") ||
+			   !strcmp(argv[i], "--mode")) {
 			if (argc > (i + 1)) {
 				o->mode = hash(argv[i + 1]);
 				m_flag = 1;
@@ -198,7 +194,8 @@ options_t *parse(int argc, char **argv)
 				err = "-m was set, but no mode was given.";
 				goto abort;
 			}
-		} else if (!strcmp(argv[i], "-s") || !strcmp(argv[i], "--string")) {
+		} else if (!strcmp(argv[i], "-s") ||
+			   !strcmp(argv[i], "--string")) {
 			if (argc > (i + 1)) {
 				s_flag = 1;
 				o->s = argv[i + 1];
@@ -219,7 +216,6 @@ options_t *parse(int argc, char **argv)
 		err = "Please provide a supported padding mode. See --help for a list of modes.";
 		goto abort;
 	}
-
 
 	if (!l_flag)
 		o->length = DEFAULT_LENGTH;
@@ -247,7 +243,6 @@ help:
 	return NULL;
 }
 
-
 /*
  * Searches the command line arguments for the last freestanding
  * string, that is the last string that is not a recognized option
@@ -266,16 +261,12 @@ char *last_standalone(int argc, char **argv)
 	char *s = "";
 
 	for (int i = 1; i < argc; ++i) {
-		if (!strcmp(argv[i], "-l")
-		    || !strcmp(argv[i], "--length")
-		    || !strcmp(argv[i], "-c")
-		    || !strcmp(argv[i], "--char")
-		    || !strcmp(argv[i], "-m")
-		    || !strcmp(argv[i], "--mode"))
+		if (!strcmp(argv[i], "-l") || !strcmp(argv[i], "--length") ||
+		    !strcmp(argv[i], "-c") || !strcmp(argv[i], "--char") ||
+		    !strcmp(argv[i], "-m") || !strcmp(argv[i], "--mode"))
 			++i;
 		else
 			s = argv[i];
-
 	}
 
 	return s;
@@ -302,7 +293,7 @@ int hash(char *c)
 		return 0x3;
 	} else if (!strcmp(c, "center") || !strcmp(c, "CENTER")) {
 		return 0x4;
-	} else if(!strcmp(c, "centre") || !strcmp(c, "CENTRE")) {
+	} else if (!strcmp(c, "centre") || !strcmp(c, "CENTRE")) {
 		return 0x4;
 	} else {
 		return 0x0;
