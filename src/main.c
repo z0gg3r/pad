@@ -121,9 +121,10 @@ int main(int argc, char **argv)
 		// NOTE: This assumes 80 character lines, but
 		//       that much should be expected c:
 		int left = half - 40;
-		p = realloc(p, ((strlen(o->s) + left) * 5) + 1);
+		size_t len = strlen(o->s) + left * 5;
+		p = realloc(p, len + 1);
 		pad_left("", left, p, o->_pad);
-		strncat(p, o->s, strlen(o->s));
+		strncat(p, o->s, len);
 	} break;
 	default:
 		pad_both(o->s, o->length, p, o->_pad);
