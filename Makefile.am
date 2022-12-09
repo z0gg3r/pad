@@ -1,10 +1,3 @@
-LDADD = -lpadding
-
-if JEMALLOC
-LDADD += -ljemalloc
-AM_LDFLAGS=-lm -lstdc++ -lgcc -lm -pthread
-endif
-
 bin_PROGRAMS = pad
-pad_SOURCES = src/main.c src/spoof.h
+pad_SOURCES = src/main.c src/padding.c src/wee-utf8.c src/padding.h src/wee-utf8.h
 man1_MANS = pad.1

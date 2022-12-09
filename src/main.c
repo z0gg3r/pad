@@ -2,14 +2,14 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-#include "spoof.h"
 #include <stdio.h>
 #include <string.h>
 #include <sys/ioctl.h>
 #include <err.h>
 #include <fcntl.h>
+#include <stdlib.h>
 #include <unistd.h>
-#include <padding.h>
+#include "padding.h"
 
 // Defaults if not specified by commandline
 #define DEFAULT_LENGTH 80
@@ -92,7 +92,7 @@ int main(int argc, char **argv)
 	// While we want length chars, they might be bigger
 	// than sizeof(char) (y'know UTF8 and stuff), so we
 	// just allocate 5 times length :).
-	char *p = _calloc_((o->length * 5) + 1, sizeof(char));
+	char *p = calloc((o->length * 5) + 1, sizeof(char));
 
 	switch (o->mode) {
 	case 0x01:
@@ -107,7 +107,7 @@ int main(int argc, char **argv)
 			// There was some error during execution of get_winsize
 			// What went wrong was printed to stderr, so we just free
 			// p and goto failure
-			_free_(p);
+			free(p);
 			goto failure;
 		}
 
@@ -118,7 +118,7 @@ int main(int argc, char **argv)
 		//       that much should be expected c:
 		int left = half - 40;
 		size_t len = strlen(o->s) + left * 5;
-		p = _realloc_(p, len + 1);
+		p = realloc(p, len + 1);
 		pad_left("", left, p, o->_pad);
 		strncat(p, o->s, len);
 	} break;
@@ -128,12 +128,12 @@ int main(int argc, char **argv)
 
 	printf("%s\n", p);
 
-	_free_(p);
-	_free_(o);
+	free(p);
+	free(o);
 	return 0;
 
 failure:
-	_free_(o);
+	free(o);
 	print_usage(argv[0]);
 	return ABORT_WAS_ERROR;
 }
@@ -149,7 +149,7 @@ failure:
  */
 options_t *parse(int argc, char **argv)
 {
-	options_t *o = _malloc_(sizeof(options_t));
+	options_t *o = malloc(sizeof(options_t));
 
 	int l_flag = 0;
 	int c_flag = 0;
@@ -236,7 +236,7 @@ abort:
 	fprintf(stderr, "%s\n", err);
 help:
 	PARSE_ABORT = 1;
-	_free_(o);
+	free(o);
 	return NULL;
 }
 
