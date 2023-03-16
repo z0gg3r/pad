@@ -11,14 +11,26 @@
 #include <unistd.h>
 #include "padding.h"
 
+#ifndef PACKAGE
+#define PACKAGE "pad"
+#endif
+
+#ifndef VERSION
+#define VERSION "0.0.0"
+#endif
+
+#ifndef PACKAGE_BUGREPORT
+#define PACKAGE_BUGREPORT ""
+#endif
+
 // Defaults if not specified by commandline
 #define DEFAULT_LENGTH 80
 #define DEFAULT_CHAR " "
 #define DEFAULT_MODE 0x3
 
 // Helper flags for parsing
-int PARSE_ABORT = 0;
-int ABORT_WAS_ERROR = 1;
+static int PARSE_ABORT = 0;
+static int ABORT_WAS_ERROR = 1;
 
 // Struct holding all possible options
 typedef struct options {
@@ -33,7 +45,7 @@ options *parse(int, char **);
 char *last_standalone(int, char **);
 int hash(char *);
 void print_usage(char *);
-int get_winsize();
+int get_winsize(void);
 
 /*
  * Prints a help message to stderr
@@ -52,7 +64,7 @@ void print_usage(char *s)
  * Simple helper like function that returns the size
  * of the terminal window (as columns).
  */
-int get_winsize()
+int get_winsize(void)
 {
 	struct winsize ws;
 	int fd;
