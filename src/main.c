@@ -28,6 +28,8 @@
 #define DEFAULT_CHAR " "
 #define DEFAULT_MODE 0x3
 
+#define CHECK_OPT(x, y, z) !strcmp(x, y) || !strcmp(x, z)
+
 // Helper flags for parsing
 static int PARSE_ABORT = 0;
 static int ABORT_WAS_ERROR = 1;
@@ -170,7 +172,7 @@ options *parse(int argc, char **argv)
 
 	char *err = "";
 	for (int i = 1; i < argc; ++i) {
-		if (!strcmp(argv[i], "-l") || !strcmp(argv[i], "--length")) {
+		if (CHECK_OPT(argv[i], "-l", "--length")) {
 			if (argc > (i + 1)) {
 				l_flag = 1;
 				o->length = atoi(argv[i + 1]);
@@ -179,8 +181,7 @@ options *parse(int argc, char **argv)
 				err = "-l was set, but no length was given.";
 				goto abort;
 			}
-		} else if (!strcmp(argv[i], "-c") ||
-			   !strcmp(argv[i], "--char")) {
+		} else if (CHECK_OPT(argv[i], "-c", "--char")) {
 			if (argc > (i + 1)) {
 				c_flag = 1;
 				o->_pad = argv[i + 1];
@@ -189,12 +190,10 @@ options *parse(int argc, char **argv)
 				err = "-c was set, but no char was given.";
 				goto abort;
 			}
-		} else if (!strcmp(argv[i], "-h") ||
-			   !strcmp(argv[i], "--help")) {
+		} else if (CHECK_OPT(argv[i], "-h", "--help")) {
 			ABORT_WAS_ERROR = 0;
 			goto help;
-		} else if (!strcmp(argv[i], "-m") ||
-			   !strcmp(argv[i], "--mode")) {
+		} else if (CHECK_OPT(argv[i], "-m", "--mode")) {
 			if (argc > (i + 1)) {
 				o->mode = hash(argv[i + 1]);
 				m_flag = 1;
@@ -203,8 +202,7 @@ options *parse(int argc, char **argv)
 				err = "-m was set, but no mode was given.";
 				goto abort;
 			}
-		} else if (!strcmp(argv[i], "-s") ||
-			   !strcmp(argv[i], "--string")) {
+		} else if (CHECK_OPT(argv[i], "-s", "--string")) {
 			if (argc > (i + 1)) {
 				s_flag = 1;
 				o->s = argv[i + 1];
@@ -270,9 +268,9 @@ char *last_standalone(int argc, char **argv)
 	char *s = "";
 
 	for (int i = 1; i < argc; ++i) {
-		if (!strcmp(argv[i], "-l") || !strcmp(argv[i], "--length") ||
-		    !strcmp(argv[i], "-c") || !strcmp(argv[i], "--char") ||
-		    !strcmp(argv[i], "-m") || !strcmp(argv[i], "--mode"))
+		if (CHECK_OPT(argv[i], "-l", "--length") ||
+		    CHECK_OPT(argv[i], "-c", "--char") ||
+		    CHECK_OPT(argv[i], "-m", "--mode"))
 			++i;
 		else
 			s = argv[i];
