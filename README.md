@@ -4,7 +4,7 @@ Pad is a simple program that adds padding to a string
 
 ## Building
 
-To build run ```mkdir build-aux && autoreconf -i && ./configure && make```
+Clone this repo, cd into it and type make
 
 ## Known Bugs
 
