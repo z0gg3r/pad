@@ -13,8 +13,8 @@ Files: pad.1 README.md
 Copyright: 2021 zocker <zocker@10zen.eu>
 License: GFDL-1.3-or-later
 
-Files: configure.ac Makefile.am
-Copyright: 2021 zocker <zocker@10zen.eu>
+Files: Makefile
+Copyright: 2023 zocker <zocker@10zen.eu>
 License: GPL-3.0-or-later
 
 Files: .gitignore

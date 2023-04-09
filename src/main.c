@@ -11,17 +11,9 @@
 #include <unistd.h>
 #include "padding.h"
 
-#ifndef PACKAGE
 #define PACKAGE "pad"
-#endif
-
-#ifndef VERSION
-#define VERSION "0.0.0"
-#endif
-
-#ifndef PACKAGE_BUGREPORT
-#define PACKAGE_BUGREPORT ""
-#endif
+#define VERSION "0.1.9"
+#define PACKAGE_BUGREPORT "zocker@10zen.eu"
 
 // Defaults if not specified by commandline
 #define DEFAULT_LENGTH 80
