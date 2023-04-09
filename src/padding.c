@@ -17,7 +17,7 @@
  */
 char *pad_left(char *s, int size, char *p, char *_pad)
 {
-	if (strlen(s) >= size)
+	if (strlen(s) >= (size_t)size)
 		return s;
 
 	char *buf = padding(size - strlen(s), _pad);
@@ -40,7 +40,7 @@ char *pad_left(char *s, int size, char *p, char *_pad)
  */
 char *pad_both(char *s, int size, char *p, char *_pad)
 {
-	if (strlen(s) >= size)
+	if (strlen(s) >= (size_t)size)
 		return s;
 	int b_size = (size - strlen(s)) / 2;
 
@@ -62,7 +62,7 @@ char *pad_both(char *s, int size, char *p, char *_pad)
  */
 char *pad_right(char *s, int size, char *p, char *_pad)
 {
-	if (strlen(s) >= size)
+	if (strlen(s) >= (size_t)size)
 		return s;
 
 	char *buf = padding(size - strlen(s), _pad);
