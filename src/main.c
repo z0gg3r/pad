@@ -106,7 +106,7 @@ int main(int argc, char **argv)
 	// While we want length chars, they might be bigger
 	// than sizeof(char) (y'know UTF8 and stuff), so we
 	// just allocate 5 times length :).
-	char *p = calloc((o->length * 5) + 1, sizeof(char));
+	char *p = calloc(EXPAND_SIZE(o->length) + 1, sizeof(char));
 
 	switch (o->mode) {
 	case 0x01:
