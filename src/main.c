@@ -4,6 +4,7 @@
 
 #include <stdio.h>
 #include <string.h>
+#include <strings.h>
 #include <sys/ioctl.h>
 #include <err.h>
 #include <fcntl.h>
@@ -15,10 +16,15 @@
 #define VERSION "0.1.9"
 #define PACKAGE_BUGREPORT "zocker@10zen.eu"
 
+#define MODE_LEFT	0x00
+#define MODE_RIGHT	0x01
+#define MODE_BOTH	0x02
+#define MODE_CENTRE	0x03
+
 // Defaults if not specified by commandline
 #define DEFAULT_LENGTH 80
 #define DEFAULT_CHAR " "
-#define DEFAULT_MODE 0x3
+#define DEFAULT_MODE MODE_BOTH
 
 #define CHECK_OPT(x, y, z) !strcmp(x, y) || !strcmp(x, z)
 
@@ -101,13 +107,13 @@ int main(int argc, char **argv)
 	char *p = calloc(EXPAND_SIZE(o->length) + 1, sizeof(char));
 
 	switch (o->mode) {
-	case 0x01:
+	case MODE_LEFT:
 		pad_left(o->s, o->length, p, o->_pad);
 		break;
-	case 0x02:
+	case MODE_RIGHT:
 		pad_right(o->s, o->length, p, o->_pad);
 		break;
-	case 0x04: {
+	case MODE_CENTRE: {
 		int ws = 0;
 		if ((ws = get_winsize()) == -1) {
 			// There was some error during execution of get_winsize
@@ -211,11 +217,6 @@ options *parse(int argc, char **argv)
 		goto abort;
 	}
 
-	if (m_flag && !o->mode) {
-		err = "Please provide a supported padding mode. See --help for a list of modes.";
-		goto abort;
-	}
-
 	if (!l_flag)
 		o->length = DEFAULT_LENGTH;
 
@@ -275,26 +276,18 @@ char *last_standalone(int argc, char **argv)
  * A simple function that takes in a string as an argument
  * and retunrs an integer. This is used to 'quickly' decide
  * the requested padding mode.
- * Possible return values:
- * 0x1 = left
- * 0x2 = right
- * 0x3 = both
- * 0x4 = center
- * 0x5 = invalid
  */
 int hash(char *c)
 {
-	if (!strcmp(c, "left") || !strcmp(c, "LEFT")) {
-		return 0x1;
-	} else if (!strcmp(c, "right") || !strcmp(c, "RIGHT")) {
-		return 0x2;
-	} else if (!strcmp(c, "both") || !strcmp(c, "BOTH")) {
-		return 0x3;
-	} else if (!strcmp(c, "center") || !strcmp(c, "CENTER")) {
-		return 0x4;
-	} else if (!strcmp(c, "centre") || !strcmp(c, "CENTRE")) {
-		return 0x4;
-	} else {
-		return 0x0;
+	if (!strcasecmp(c, "left")) {
+		return MODE_LEFT;
+	} else if (!strcasecmp(c, "right")) {
+		return MODE_RIGHT;
+	} else if (!strcasecmp(c, "both")) {
+		return MODE_BOTH;
+	} else if (!strcasecmp(c, "center") || !strcasecmp(c, "centre")) {
+		return MODE_CENTRE;
 	}
+
+	return DEFAULT_MODE;
 }
