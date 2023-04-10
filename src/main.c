@@ -13,7 +13,7 @@
 #include "padding.h"
 
 #define PACKAGE "pad"
-#define VERSION "0.1.9"
+#define VERSION "0.2.0"
 #define PACKAGE_BUGREPORT "zocker@10zen.eu"
 
 #define MODE_LEFT	0x00
