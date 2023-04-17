@@ -33,7 +33,7 @@ static int PARSE_ABORT = 0;
 static int ABORT_WAS_ERROR = 1;
 
 // Struct holding all possible options
-typedef struct options {
+struct options {
 	int length;
 	char *_pad;
 	int mode;
@@ -41,7 +41,7 @@ typedef struct options {
 } options;
 
 // Functions
-options *parse(int, char **);
+struct options *parse(int, char **);
 char *last_standalone(int, char **);
 int hash(char *);
 void print_usage(char *);
@@ -96,7 +96,7 @@ int get_winsize(void)
  */
 int main(int argc, char **argv)
 {
-	options *o = parse(argc, argv);
+	struct options *o = parse(argc, argv);
 
 	if (PARSE_ABORT)
 		goto failure;
@@ -159,9 +159,9 @@ failure:
  *
  * RETURNS NULL IF ABORTED, CHECK PARSE_ABORT BEFORE USING RETURN VALUE
  */
-options *parse(int argc, char **argv)
+struct options *parse(int argc, char **argv)
 {
-	options *o = malloc(sizeof(options));
+	struct options *o = calloc(1, sizeof(struct options));
 
 	int l_flag = 0;
 	int c_flag = 0;
