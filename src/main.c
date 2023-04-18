@@ -138,6 +138,11 @@ int main(int argc, char **argv)
 		pad_both(o->s, o->length, p, o->_pad);
 	}
 
+	if (!p) {
+		free(o);
+		return 1;
+	}
+
 	printf("%s\n", p);
 
 	free(p);

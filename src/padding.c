@@ -23,6 +23,11 @@ char *pad_left(char *s, int size, char *p, char *_pad)
 
 	char *buf = padding(size - slen + 1, _pad);
 
+	if (!buf) {
+		p = NULL;
+		return NULL;
+	}
+
 	int pc = EXPAND_SIZE(size);
 
 	strncat(p, buf, pc);
@@ -43,6 +48,10 @@ char *pad_both(char *s, int size, char *p, char *_pad)
 	int b_size = (size - slen) / 2;
 
 	char *buf = padding(b_size + 1, _pad);
+
+	if (!buf) {
+		return NULL;
+	}
 
 	int pc = EXPAND_SIZE(size);
 
@@ -66,6 +75,10 @@ char *pad_right(char *s, int size, char *p, char *_pad)
 
 	char *buf = padding(size - slen + 1, _pad);
 
+	if (!buf) {
+		return NULL;
+	}
+
 	int pc = EXPAND_SIZE(size);
 	strncat(p, s, pc);
 	strncat(p, buf, pc);
@@ -83,6 +96,12 @@ char *pad_right(char *s, int size, char *p, char *_pad)
 char *padding(int size, char *p)
 {
 	char *tmp = calloc(CHAR_WIDTH, sizeof(char));
+
+	if (!tmp) {
+		perror("pad - padding");
+		return NULL;
+	}
+
 	utf8_int_string(utf8_char_int(p), tmp);
 
 	int tmp_len = strlen(tmp);
@@ -94,6 +113,13 @@ char *padding(int size, char *p)
 		size *= tmp_len;
 
 	char *s = calloc(size + 1, sizeof(char));
+
+	if (!s) {
+		perror("pad - padding");
+		free(tmp);
+
+		return NULL;
+	}
 
 	// Copy the `character` into `s`
 	// Cannot use strncat since that fucks the string up
