@@ -69,13 +69,14 @@ int get_winsize(void)
 	struct winsize ws;
 	int fd;
 
-	if ((fd = open("/dev/tty", O_RDWR)) < 0) {
+	if ((fd = open("/dev/tty", O_RDONLY)) < 0) {
 		fprintf(stderr, "Failed to open /dev/tty");
 		return -1;
 	}
 
 	if (ioctl(fd, TIOCGWINSZ, &ws) < 0) {
 		fprintf(stderr, "Failed to read terminal window size");
+		close(fd);
 		return -1;
 	}
 
