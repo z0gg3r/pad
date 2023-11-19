@@ -13,7 +13,7 @@ SFLAGS = -Wbitwise -Wbitwise-pointer -Wcast-truncate \
 	 -Wreturn-void -Wshadow -Wshift-count-negative \
 	 -Wshift-count-overflow
 
-OBJQ = main.o padding.o wee-utf8.o
+OBJQ = main.o padding.o wee-utf8.o strbuf.o
 
 %.o: src/%.c
 	@echo CC $<

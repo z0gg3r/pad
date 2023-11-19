@@ -1,6 +1,6 @@
-// SPDX-FileCopyrightText: 2021 zocker <zocker@10zen.eu>
+// SPDX-FileCopyrightText: 2023 zocker <zocker@10zen.eu>
 //
-// SPDX-License-Identifier: GPL-3.0-or-later
+// SPDX-License-Identifier: GPL-2.0-or-later
 
 #include <stdio.h>
 #include <string.h>
@@ -11,6 +11,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include "padding.h"
+#include "common.h"
 
 #define PACKAGE "pad"
 #define VERSION "0.2.0"
@@ -38,7 +39,7 @@ struct options {
 	char *_pad;
 	int mode;
 	char *s;
-} options;
+};
 
 // Functions
 struct options *parse(int, char **);
@@ -102,17 +103,23 @@ int main(int argc, char **argv)
 	if (PARSE_ABORT)
 		goto failure;
 
+	struct str_buf s = {
+		.data = NULL,
+		.size = 0,
+		.len = 0,
+	};
 	// While we want length chars, they might be bigger
 	// than sizeof(char) (y'know UTF8 and stuff), so we
 	// just allocate 5 times length :).
-	char *p = calloc(EXPAND_SIZE(o->length) + 1, sizeof(char));
+	char *p = calloc(EXPAND_SIZE(o->length) + 2, sizeof(char));
+	str_buf_init(&s, p, EXPAND_SIZE(o->length) + 2);
 
 	switch (o->mode) {
 	case MODE_LEFT:
-		pad_left(o->s, o->length, p, o->_pad);
+		pad_left(o->s, o->length, &s, o->_pad);
 		break;
 	case MODE_RIGHT:
-		pad_right(o->s, o->length, p, o->_pad);
+		pad_right(o->s, o->length, &s, o->_pad);
 		break;
 	case MODE_CENTRE: {
 		int ws = 0;
@@ -131,12 +138,13 @@ int main(int argc, char **argv)
 		//       that much should be expected c:
 		int left = half - 40;
 		size_t len = strlen(o->s) + left * 5;
-		p = realloc(p, len + 1);
-		pad_left("", left, p, o->_pad);
-		strncat(p, o->s, len);
+		p = realloc(p, len + 2);
+		str_buf_init(&s, p, len + 2);
+		pad_left("", left, &s, o->_pad);
+		str_buf_cat(&s, o->s);
 	} break;
 	default:
-		pad_both(o->s, o->length, p, o->_pad);
+		pad_both(o->s, o->length, &s, o->_pad);
 	}
 
 	if (!p) {
@@ -144,9 +152,9 @@ int main(int argc, char **argv)
 		return 1;
 	}
 
-	printf("%s\n", p);
+	printf("%s\n", str_buf_str(&s));
 
-	free(p);
+	free(s.data);
 	free(o);
 	return 0;
 
