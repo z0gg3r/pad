@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: GPL-2.0-only
 // Adapted from include/linux/seq_buf.h
 // Modifications are:
+// - Replacing seq_ with str_
 // - Renaming 'buffer' to 'data'
 // - Adding str_buf_cat()
 // - Dropping some kernel-specific stuff (like WARN_ON)
