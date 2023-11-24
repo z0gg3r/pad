@@ -11,9 +11,9 @@
 #define EXPAND_SIZE(x) x * CHAR_WIDTH
 
 // input, size of result, result string, padding
-char *pad_left(char *, int, struct str_buf *, char *);
-char *pad_right(char *, int, struct str_buf *, char *);
-char *pad_both(char *, int, struct str_buf *, char *);
+int pad_left(char *, int, struct str_buf *, char *);
+int pad_right(char *, int, struct str_buf *, char *);
+int pad_both(char *, int, struct str_buf *, char *);
 char *padding(int, char *);
 
 #endif
