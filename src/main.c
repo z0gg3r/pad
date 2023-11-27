@@ -177,16 +177,16 @@ struct options *parse(int argc, char **argv)
 {
 	struct options *o = calloc(1, sizeof(struct options));
 
-	int l_flag = 0;
-	int c_flag = 0;
-	int m_flag = 0;
-	int s_flag = 0;
+	int flag_length = 0;
+	int flag_char = 0;
+	int flag_mode = 0;
+	int flag_string = 0;
 
 	char *err = "";
 	for (int i = 1; i < argc; ++i) {
 		if (CHECK_OPT(argv[i], "-l", "--length")) {
 			if (argc > (i + 1)) {
-				l_flag = 1;
+				flag_length = 1;
 				o->length = atoi(argv[i + 1]);
 				++i;
 			} else {
@@ -195,7 +195,7 @@ struct options *parse(int argc, char **argv)
 			}
 		} else if (CHECK_OPT(argv[i], "-c", "--char")) {
 			if (argc > (i + 1)) {
-				c_flag = 1;
+				flag_char = 1;
 				o->_pad = argv[i + 1];
 				++i;
 			} else {
@@ -208,7 +208,7 @@ struct options *parse(int argc, char **argv)
 		} else if (CHECK_OPT(argv[i], "-m", "--mode")) {
 			if (argc > (i + 1)) {
 				o->mode = hash(argv[i + 1]);
-				m_flag = 1;
+				flag_mode = 1;
 				++i;
 			} else {
 				err = "-m was set, but no mode was given.";
@@ -216,7 +216,7 @@ struct options *parse(int argc, char **argv)
 			}
 		} else if (CHECK_OPT(argv[i], "-s", "--string")) {
 			if (argc > (i + 1)) {
-				s_flag = 1;
+				flag_string = 1;
 				o->s = argv[i + 1];
 				++i;
 			} else {
@@ -226,21 +226,21 @@ struct options *parse(int argc, char **argv)
 		}
 	}
 
-	if (l_flag && o->length < 1) {
+	if (flag_length && o->length < 1) {
 		err = "Length should be a non-zero positive integer.";
 		goto abort;
 	}
 
-	if (!l_flag)
+	if (!flag_length)
 		o->length = DEFAULT_LENGTH;
 
-	if (!c_flag)
+	if (!flag_char)
 		o->_pad = DEFAULT_CHAR;
 
-	if (!m_flag)
+	if (!flag_mode)
 		o->mode = DEFAULT_MODE;
 
-	if (!s_flag) {
+	if (!flag_string) {
 		o->s = last_standalone(argc, argv);
 		if (!strcmp(o->s, "")) {
 			err = "No string was passed. If you want to pad an empty string, please use --string";
