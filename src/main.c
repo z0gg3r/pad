@@ -112,6 +112,13 @@ int main(int argc, char **argv)
 	// than sizeof(char) (y'know UTF8 and stuff), so we
 	// just allocate 5 times length :).
 	char *p = calloc(EXPAND_SIZE(o->length) + 2, sizeof(char));
+
+	if (!p) {
+		perror(argv[0]);
+		free(o);
+		return 1;
+	}
+
 	str_buf_init(&s, p, EXPAND_SIZE(o->length) + 2);
 
 	switch (o->mode) {
