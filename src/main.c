@@ -144,7 +144,7 @@ int main(int argc, char **argv)
 		// NOTE: This assumes 80 character lines, but
 		//       that much should be expected c:
 		int left = half - 40;
-		size_t len = strlen(o->s) + left * 5;
+		size_t len = EXPAND_SIZE(strlen(o->s) + left);
 		p = realloc(p, len + 2);
 
 		if (!p) {
