@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: Modifications by zocker <zocker@10zen.eu>; Original by "Steven Rostedt (Google)" <rostedt@goodmis.org>, Sergey Senozhatsky <senozhatsky@chromium.org>, Petr Mladek <pmladek@suse.com>
+// SPDX-FileCopyrightText: Modifications by zocker <zocker@10zen.eu>; Original by "Steven Rostedt (Google)" <rostedt@goodmis.org>, Sergey Senozhatsky <senozhatsky@chromium.org>, Petr Mladek <pmladek@suse.com> et al
 // SPDX-License-Identifier: GPL-2.0-only
 // Adapted from include/linux/seq_buf.h
 // Modifications are:
