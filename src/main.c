@@ -146,6 +146,15 @@ int main(int argc, char **argv)
 		int left = half - 40;
 		size_t len = strlen(o->s) + left * 5;
 		p = realloc(p, len + 2);
+
+		if (!p) {
+			perror(argv[0]);
+			free(o);
+			free(s.data);
+
+			return 1;
+		}
+
 		str_buf_init(&s, p, len + 2);
 		pad_left("", left, &s, o->_pad);
 		str_buf_cat(&s, o->s);
