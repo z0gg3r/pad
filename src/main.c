@@ -114,7 +114,7 @@ int main(int argc, char **argv)
 	char *p = calloc(EXPAND_SIZE(o->length) + CHAR_WIDTH, sizeof(char));
 
 	if (!p) {
-		perror(argv[0]);
+		perror(PACKAGE);
 		free(o);
 		return 1;
 	}
@@ -148,7 +148,7 @@ int main(int argc, char **argv)
 		p = realloc(p, len + CHAR_WIDTH);
 
 		if (!p) {
-			perror(argv[0]);
+			perror(PACKAGE);
 			free(o);
 			free(s.data);
 
@@ -176,7 +176,7 @@ int main(int argc, char **argv)
 
 failure:
 	free(o);
-	print_usage(argv[0]);
+	print_usage(PACKAGE);
 	return ABORT_WAS_ERROR;
 }
 
