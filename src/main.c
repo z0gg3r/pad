@@ -111,7 +111,7 @@ int main(int argc, char **argv)
 	// While we want length chars, they might be bigger
 	// than sizeof(char) (y'know UTF8 and stuff), so we
 	// just allocate 5 times length :).
-	char *p = calloc(EXPAND_SIZE(o->length) + 2, sizeof(char));
+	char *p = calloc(EXPAND_SIZE(o->length) + CHAR_WIDTH, sizeof(char));
 
 	if (!p) {
 		perror(argv[0]);
@@ -119,7 +119,7 @@ int main(int argc, char **argv)
 		return 1;
 	}
 
-	str_buf_init(&s, p, EXPAND_SIZE(o->length) + 2);
+	str_buf_init(&s, p, EXPAND_SIZE(o->length) + CHAR_WIDTH);
 
 	switch (o->mode) {
 	case MODE_LEFT:
@@ -145,7 +145,7 @@ int main(int argc, char **argv)
 		//       that much should be expected c:
 		int left = half - 40;
 		size_t len = EXPAND_SIZE(strlen(o->s) + left);
-		p = realloc(p, len + 2);
+		p = realloc(p, len + CHAR_WIDTH);
 
 		if (!p) {
 			perror(argv[0]);
@@ -155,7 +155,7 @@ int main(int argc, char **argv)
 			return 1;
 		}
 
-		str_buf_init(&s, p, len + 2);
+		str_buf_init(&s, p, len + CHAR_WIDTH);
 		pad_left("", left, &s, o->_pad);
 		str_buf_cat(&s, o->s);
 	} break;
