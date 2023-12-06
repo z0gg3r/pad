@@ -93,6 +93,4 @@ static inline void str_buf_commit(struct str_buf *s, int num)
 		s->len += num;
 }
 
-
-
 #endif

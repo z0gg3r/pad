@@ -15,7 +15,7 @@
  * Char will be added to the left of the string.
  * Size should not count the null terminator.
  */
-int pad_left(char *s, int size, struct str_buf  *p, char *_pad)
+int pad_left(char *s, int size, struct str_buf *p, char *_pad)
 {
 	size_t slen = utf8_strlen(s);
 	if (slen >= (size_t)size) {
@@ -60,7 +60,7 @@ int pad_both(char *s, int size, struct str_buf *p, char *_pad)
 
 	free(buf);
 
-	return str_buf_has_overflowed(p);;
+	return str_buf_has_overflowed(p);
 }
 
 /*
@@ -85,7 +85,7 @@ int pad_right(char *s, int size, struct str_buf *p, char *_pad)
 
 	free(buf);
 
-	return str_buf_has_overflowed(p);;
+	return str_buf_has_overflowed(p);
 }
 
 /*

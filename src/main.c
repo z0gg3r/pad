@@ -17,10 +17,10 @@
 #define VERSION "0.2.1"
 #define PACKAGE_BUGREPORT "zocker@10zen.eu"
 
-#define MODE_LEFT	0x00
-#define MODE_RIGHT	0x01
-#define MODE_BOTH	0x02
-#define MODE_CENTRE	0x03
+#define MODE_LEFT 0x00
+#define MODE_RIGHT 0x01
+#define MODE_BOTH 0x02
+#define MODE_CENTRE 0x03
 
 // Defaults if not specified by commandline
 #define DEFAULT_LENGTH 80
