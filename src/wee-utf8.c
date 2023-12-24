@@ -436,9 +436,8 @@ int utf8_strnlen(const char *string, int bytes)
 
 int utf8_strlen_screen(const char *string)
 {
-	int length, num_char, add_for_tab;
+	int length, num_char;
 	wchar_t *alloc_wstring, *ptr_wstring, wstring[4 + 2];
-	const char *ptr_string;
 
 	if (!string || !string[0])
 		return 0;
