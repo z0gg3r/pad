@@ -4,7 +4,7 @@
 #include "common.h"
 
 /**
- * str_buf_cat() - Cat. a string onto a str_buf-managed string
+ * str_buf_cat() - Concatenate a string onto a str_buf-managed string
  *
  * @s: The managed cstring
  * @b: The cstring to add
