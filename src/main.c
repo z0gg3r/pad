@@ -36,7 +36,7 @@ static int ABORT_WAS_ERROR = 1;
 // Struct holding all possible options
 struct options {
 	int length;
-	char *_pad;
+	char *padding_char;
 	int mode;
 	char *s;
 };
@@ -123,10 +123,10 @@ int main(int argc, char **argv)
 
 	switch (o->mode) {
 	case MODE_LEFT:
-		pad_left(o->s, o->length, &s, o->_pad);
+		pad_left(o->s, o->length, &s, o->padding_char);
 		break;
 	case MODE_RIGHT:
-		pad_right(o->s, o->length, &s, o->_pad);
+		pad_right(o->s, o->length, &s, o->padding_char);
 		break;
 	case MODE_CENTRE: {
 		int ws = 0;
@@ -156,11 +156,11 @@ int main(int argc, char **argv)
 		}
 
 		str_buf_init(&s, p, len + CHAR_WIDTH);
-		pad_left("", left, &s, o->_pad);
+		pad_left("", left, &s, o->padding_char);
 		str_buf_cat(&s, o->s);
 	} break;
 	default:
-		pad_both(o->s, o->length, &s, o->_pad);
+		pad_both(o->s, o->length, &s, o->padding_char);
 	}
 
 	if (!p) {
@@ -212,7 +212,7 @@ struct options *parse(int argc, char **argv)
 		} else if (CHECK_OPT(argv[i], "-c", "--char")) {
 			if (argc > (i + 1)) {
 				flag_char = 1;
-				o->_pad = argv[i + 1];
+				o->padding_char = argv[i + 1];
 				++i;
 			} else {
 				err = "-c was set, but no char was given.";
@@ -251,7 +251,7 @@ struct options *parse(int argc, char **argv)
 		o->length = DEFAULT_LENGTH;
 
 	if (!flag_char)
-		o->_pad = DEFAULT_CHAR;
+		o->padding_char = DEFAULT_CHAR;
 
 	if (!flag_mode)
 		o->mode = DEFAULT_MODE;
