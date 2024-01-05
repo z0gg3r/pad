@@ -138,7 +138,7 @@ int main(int argc, char **argv)
 			goto failure;
 		}
 
-		// We get half the screen size to get the middle
+		// Get the middle by slicing the size in half
 		int half = ws / 2;
 		// And subtract 40 to get the starting point.
 		// NOTE: This assumes 80 character lines, but
