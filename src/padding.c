@@ -8,12 +8,20 @@
 #include "wee-utf8.h" // stolen from Weechat (https://weechat.org)
 #include "padding.h"
 
-/*
- * Takes an input string, a result string buffer and a character
- * and pads the input string to the size of the result buffer,
- * with the differnce in size being filled up with the char.
- * Char will be added to the left of the string.
- * Size should not count the null terminator.
+/**
+ * pad_left() - Left pad a string
+ *
+ * @s: The string that shall be padded
+ * @size: Size of the padded string
+ * @p: Buffer to hold the padded string
+ * @padding_char: Padding character
+ *
+ * We crate a string that holds @padding_characcter @size times (minus the length
+ * of @s) and cat it onto @p so that we get a string of the form <PADDING>@s.
+ *
+ * Returns:
+ * * 0 on success
+ * * 1 on failure or str_buf overflow
  */
 int pad_left(char *s, int size, struct str_buf *p, char *padding_char)
 {
@@ -36,8 +44,21 @@ int pad_left(char *s, int size, struct str_buf *p, char *padding_char)
 	return str_buf_has_overflowed(p);
 }
 
-/*
- * Char will be added to both sides of the string.
+/**
+ * pad_both() - Left and right pad a string
+ *
+ * @s: The string that shall be padded
+ * @size: Size of the padded string
+ * @p: Buffer to hold the padded string
+ * @padding_char: Padding character
+ *
+ * Like pad_left(), but taking the form <PADDING>@s<PADDING>.
+ *
+ * Returns:
+ * * 0 on success
+ * * 1 on failure or str_buf overflow
+ *
+ * See pad_left()
  */
 int pad_both(char *s, int size, struct str_buf *p, char *padding_char)
 {
@@ -63,8 +84,21 @@ int pad_both(char *s, int size, struct str_buf *p, char *padding_char)
 	return str_buf_has_overflowed(p);
 }
 
-/*
- * Char will be added to the left of the string.
+/**
+ * pad_right() - Right pad a string
+ *
+ * @s: The string that shall be padded
+ * @size: Size of the padded string
+ * @p: Buffer to hold the padded string
+ * @pading_char: Padding character
+ *
+ * Like pad_left() but with the form @s<PADDING>.
+ *
+ * Returns:
+ * * 0 on success
+ * * 1 on failure or str_buf overflow
+ *
+ * See pad_left()
  */
 int pad_right(char *s, int size, struct str_buf *p, char *padding_char)
 {
@@ -88,10 +122,19 @@ int pad_right(char *s, int size, struct str_buf *p, char *padding_char)
 	return str_buf_has_overflowed(p);
 }
 
-/*
- * Takes an integer size and a character p and a string
- * containing p size times. Size is the number of characters,
- * not the allocated memory!
+/**
+ * padding() - Create a padding string
+ *
+ * @size: Length of the padding string
+ * @p: The character to create the padding string with
+ *
+ * First we calculate how much space the padding string will take by checking
+ * if @p is of length one or of utf8-length one and then multiplying by both @size
+ * and strlen(). Then we copy @p into the buffer @size times.
+ *
+ * Returns:
+ * * A padded string
+ * * NULL on any error
  */
 char *padding(int size, char *p)
 {
