@@ -15,8 +15,8 @@
 #define min(x, y) (x < y) ? x : y
 
 struct str_buf {
-	char *data;
-	size_t size; /* Allocate Size of data */
+	char *data; /* The wrapped string */
+	size_t size; /* Maximum size of data */
 	size_t len; /* Current length of data */
 };
 
