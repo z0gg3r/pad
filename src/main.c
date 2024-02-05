@@ -14,7 +14,7 @@
 #include "common.h"
 
 #define PACKAGE "pad"
-#define VERSION "0.2.2"
+#define VERSION "0.2.3"
 #define PACKAGE_BUGREPORT "zocker@10zen.eu"
 
 #define MODE_LEFT 0x00
