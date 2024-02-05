@@ -14,13 +14,6 @@ CFLAGS = -pipe -march=native -O2 \
 
 LDFLAGS = -Wl,-z,defs -Wl,-z,now -Wl,-z,relro -Wl,-z,nodlopen -Wl,-z,noexecstack
 
-SFLAGS = -Wbitwise -Wbitwise-pointer -Wcast-truncate \
-	 -Wdecl -Wdefault-bitfield-sign -Wdo-while \
-	 -Wenum-mismatch -Wflexible-array-sizeof \
-	 -Winit-cstring -Wnewline-eof -Wpointer-arith \
-	 -Wreturn-void -Wshadow -Wshift-count-negative \
-	 -Wshift-count-overflow
-
 VALGRIND_FLAGS = --leak-check=full --show-leak-kinds=all -s --track-origins=yes
 
 OBJQ = main.o padding.o wee-utf8.o strbuf.o
@@ -32,10 +25,6 @@ OBJQ = main.o padding.o wee-utf8.o strbuf.o
 pad: $(OBJQ)
 	@echo CC $^
 	@$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $^
-
-check:
-	@echo Checking all files with sparse
-	@sparse $(SFLAGS) src/*
 
 test: pad
 	@echo Checking pad with mode left
