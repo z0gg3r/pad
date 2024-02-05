@@ -12,6 +12,8 @@ CFLAGS = -pipe -march=native -O2 \
 	 -Wimplicit-fallthrough \
 	 -pedantic -pedantic-errors -Wall -Wextra
 
+LDFLAGS = -Wl,-z,defs -Wl,-z,now -Wl,-z,relro -Wl,-z,nodlopen -Wl,-z,noexecstack
+
 SFLAGS = -Wbitwise -Wbitwise-pointer -Wcast-truncate \
 	 -Wdecl -Wdefault-bitfield-sign -Wdo-while \
 	 -Wenum-mismatch -Wflexible-array-sizeof \
@@ -29,7 +31,7 @@ OBJQ = main.o padding.o wee-utf8.o strbuf.o
 
 pad: $(OBJQ)
 	@echo CC $^
-	@$(CC) $(CFLAGS) $(LIBS) -o $@ $^
+	@$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $^
 
 check:
 	@echo Checking all files with sparse
