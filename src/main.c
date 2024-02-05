@@ -211,10 +211,14 @@ struct options *parse(int argc, char **argv)
 			}
 		} else if (CHECK_OPT(argv[i], "-c", "--char")) {
 			if (argc > (i + 1)) {
+				if (strlen(argv[i + 1]) == 0)
+						goto char_err;
+
 				flag_char = 1;
 				o->padding_char = argv[i + 1];
 				++i;
 			} else {
+char_err:
 				err = "-c was set, but no char was given.";
 				goto abort;
 			}
