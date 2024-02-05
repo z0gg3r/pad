@@ -1,10 +1,16 @@
 CC = gcc
 
-CFLAGS = -march=native -O2 \
-	  -fstack-protector-strong -fcf-protection -fpie \
-	  -fPIC -pedantic -pedantic-errors \
-	  -fno-delete-null-pointer-checks -Wall -Wextra \
-	  -std=c99 -D_XOPEN_SOURCE=600
+CFLAGS = -pipe -march=native -O2 \
+	 -fstack-protector-strong -fcf-protection \
+	 -fpie -fPIC -std=c99 -D_DEFAULT_SOURCE \
+	 -fno-delete-null-pointer-checks \
+	 -fno-strict-overflow -fno-strict-aliasing \
+	 -ftrivial-auto-var-init=zero \
+	 -fstrict-flex-arrays=3 \
+	 -fstack-clash-protection \
+	 -Wformat=2 -Wtrampolines \
+	 -Wimplicit-fallthrough \
+	 -pedantic -pedantic-errors -Wall -Wextra
 
 SFLAGS = -Wbitwise -Wbitwise-pointer -Wcast-truncate \
 	 -Wdecl -Wdefault-bitfield-sign -Wdo-while \
