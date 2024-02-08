@@ -166,10 +166,8 @@ int main(int argc, char **argv)
 
 		// Get the middle by slicing the size in half
 		int half = ceildiv(ws, 2);
-		// And subtract 40 to get the starting point.
-		// NOTE: This assumes 80 character lines, but
-		//       that much should be expected c:
-		int left = half - 40;
+
+		int left = half - ceildiv(o->length, 2);
 		size_t len = EXPAND_SIZE(strlen(o->s) + left);
 		p = realloc(p, len + CHAR_WIDTH);
 
