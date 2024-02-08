@@ -71,12 +71,12 @@ int get_winsize(void)
 	int fd;
 
 	if ((fd = open("/dev/tty", O_RDONLY)) < 0) {
-		fprintf(stderr, "Failed to open /dev/tty");
+		perror(PACKAGE);
 		return -1;
 	}
 
 	if (ioctl(fd, TIOCGWINSZ, &ws) < 0) {
-		fprintf(stderr, "Failed to read terminal window size");
+		perror(PACKAGE);
 		close(fd);
 		return -1;
 	}
