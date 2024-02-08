@@ -62,9 +62,16 @@ void print_usage(void)
 		PACKAGE, PACKAGE, VERSION, PACKAGE_BUGREPORT);
 }
 
-/*
- * Simple helper like function that returns the size
- * of the terminal window (as columns).
+/**
+ * get_winsize() - Return the column number of /dev/tty
+ *
+ * Report the number of columns avaiable in /dev/tty by first opening it read-only
+ * to get a file descriptor, then passing it to ioctl() with the TIOCGWINSZ request
+ * to get information about the dimensions of /dev/tty.
+ *
+ * Returns:
+ * * Number of columns
+ * * -1 on any error
  */
 int get_winsize(void)
 {
@@ -109,9 +116,7 @@ int main(int argc, char **argv)
 		.size = 0,
 		.len = 0,
 	};
-	// While we want length chars, they might be bigger
-	// than sizeof(char) (y'know UTF8 and stuff), so we
-	// just allocate 5 times length :).
+
 	char *p = calloc(EXPAND_SIZE(o->length) + CHAR_WIDTH, sizeof(char));
 
 	if (!p) {
