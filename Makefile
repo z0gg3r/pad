@@ -38,3 +38,5 @@ test: pad
 clean:
 	@rm -f pad
 	@rm -f $(OBJQ)
+
+.PHONY: clean, check, install, test
