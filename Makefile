@@ -23,7 +23,7 @@ check: pad
 	@./pad -m left -l 25 -c "᪥" "String᪥" | tr -d '\n' | wc -m
 	@./pad -m right -l 25 -c "᪥" "String᪥" | tr -d '\n' | wc -m
 	@./pad -m both -l 25 -c "᪥" "String᪥" | tr -d '\n' | wc -m
-	@./pad -m centre -l 25 -c " " "This should be (visually) centred"
+	@./pad -m centre -c " " "This should be (visually) centred"
 
 test: pad
 	@echo Checking pad with mode left
