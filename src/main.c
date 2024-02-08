@@ -45,20 +45,21 @@ struct options {
 struct options *parse(int, char **);
 char *last_standalone(int, char **);
 int hash(char *);
-void print_usage(char *);
+void print_usage(void);
 int get_winsize(void);
 
-/*
- * Prints a help message to stderr
- * The passed string is treated as the name of the binary
+/**
+ * print_usage() - Print usage information to stderr
+ *
+ * Prints usage information (options, modes, version and author) to stderr.
  */
-void print_usage(char *s)
+void print_usage(void)
 {
 	fprintf(stderr,
 		"%s [-l LENGTH] [-c CHAR] [-m MODE] STRING\n"
 		"Modes are: left, right, centre or both\n"
 		"%s v%s - Send Bug reports to %s\n",
-		s, PACKAGE, VERSION, PACKAGE_BUGREPORT);
+		PACKAGE, PACKAGE, VERSION, PACKAGE_BUGREPORT);
 }
 
 /*
@@ -176,7 +177,7 @@ int main(int argc, char **argv)
 
 failure:
 	free(o);
-	print_usage(PACKAGE);
+	print_usage();
 	return ABORT_WAS_ERROR;
 }
 
