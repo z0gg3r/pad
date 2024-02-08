@@ -14,6 +14,10 @@ pad: $(OBJQ)
 	@echo CC $^
 	@$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $^
 
+install: pad
+	install -m755 pad $(BINDIR)
+	install -m644 pad.1 $(MANDIR)
+
 check: pad
 	@echo "Expected result: 25"
 	@./pad -m left -l 25 -c "᪥" "String᪥" | tr -d '\n' | wc -m

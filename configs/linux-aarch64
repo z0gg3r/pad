@@ -11,3 +11,7 @@ CFLAGS = -pipe -march=native -O2 \
          -pedantic -pedantic-errors -Wall -Wextra
 
 LDFLAGS = -Wl,-z,defs -Wl,-z,now -Wl,-z,relro -Wl,-z,nodlopen -Wl,-z,noexecstack
+
+DESTDIR ?= /usr/local
+BINDIR ?= $(DESTDIR)/bin
+MANDIR ?= $(DESTDIR)/share/man/man1
