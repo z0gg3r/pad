@@ -47,6 +47,7 @@ char *last_standalone(int, char **);
 int hash(char *);
 void print_usage(void);
 int get_winsize(void);
+int ceildiv(int, int);
 
 /**
  * print_usage() - Print usage information to stderr
@@ -92,6 +93,25 @@ int get_winsize(void)
 	int tmp = ws.ws_col;
 	close(fd);
 	return tmp;
+}
+
+/**
+ * ceildiv() - Divide two integers, ceiled if needed
+ *
+ * @dividend: The dividend
+ * @divisor: The divisor
+ *
+ * Do a simple division, but if the interger result is
+ * smaller than the double result, ceil it.
+ *
+ * Return: ⌈@dividend / @divisor⌉
+ */
+int ceildiv(int dividend, int divisor)
+{
+	double result = (double)dividend / (double)divisor;
+	int ret = (int)(dividend / divisor);
+
+	return ((double)ret < result) ? ++ret : ret;
 }
 
 /*
@@ -145,7 +165,7 @@ int main(int argc, char **argv)
 		}
 
 		// Get the middle by slicing the size in half
-		int half = ws / 2;
+		int half = ceildiv(ws, 2);
 		// And subtract 40 to get the starting point.
 		// NOTE: This assumes 80 character lines, but
 		//       that much should be expected c:
