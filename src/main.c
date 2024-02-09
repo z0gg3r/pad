@@ -137,8 +137,12 @@ int main(int argc, char **argv)
 	if (!o)
 		return 1;
 
-	if (o->err)
-		goto failure;
+	if (o->err) {
+		print_usage();
+		int exit_code = o->err - 1;
+		free(o);
+		return exit_code;
+	}
 
 	struct str_buf s = {
 		.data = NULL,
@@ -208,12 +212,6 @@ int main(int argc, char **argv)
 	free(s.data);
 	free(o);
 	return 0;
-
-failure:
-	print_usage();
-	int exit_code = o->err - 1;
-	free(o);
-	return exit_code;
 }
 
 /*
