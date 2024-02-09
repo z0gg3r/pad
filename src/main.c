@@ -29,16 +29,22 @@
 
 #define CHECK_OPT(x, y, z) !strcmp(x, y) || !strcmp(x, z)
 
-// Helper flags for parsing
-static int PARSE_ABORT = 0;
-static int ABORT_WAS_ERROR = 1;
-
-// Struct holding all possible options
+/**
+ * struct options - All commandline options
+ *
+ * @length: Length of the final string
+ * @padding_char: Char to pad with
+ * @mode: How to pad
+ * @s: What to pad
+ * @help: Help flag
+ * @abort: Was parsing aborted
+ */
 struct options {
 	int length;
 	char *padding_char;
 	int mode;
 	char *s;
+	int err;
 };
 
 // Functions
@@ -128,7 +134,10 @@ int main(int argc, char **argv)
 {
 	struct options *o = parse(argc, argv);
 
-	if (PARSE_ABORT)
+	if (!o)
+		return 1;
+
+	if (o->err)
 		goto failure;
 
 	struct str_buf s = {
@@ -161,7 +170,9 @@ int main(int argc, char **argv)
 			// What went wrong was printed to stderr, so we just free
 			// p and goto failure
 			free(p);
-			goto failure;
+			free(o);
+
+			return 1;
 		}
 
 		// Get the middle by slicing the size in half
@@ -199,9 +210,10 @@ int main(int argc, char **argv)
 	return 0;
 
 failure:
-	free(o);
 	print_usage();
-	return ABORT_WAS_ERROR;
+	int exit_code = o->err - 1;
+	free(o);
+	return exit_code;
 }
 
 /*
@@ -215,14 +227,20 @@ failure:
  */
 struct options *parse(int argc, char **argv)
 {
+	char *err = "";
 	struct options *o = calloc(1, sizeof(struct options));
+
+	if (!o) {
+		perror(PACKAGE);
+
+		return NULL;
+	}
 
 	int flag_length = 0;
 	int flag_char = 0;
 	int flag_mode = 0;
 	int flag_string = 0;
 
-	char *err = "";
 	for (int i = 1; i < argc; ++i) {
 		if (CHECK_OPT(argv[i], "-l", "--length")) {
 			if (argc > (i + 1)) {
@@ -247,7 +265,6 @@ char_err:
 				goto abort;
 			}
 		} else if (CHECK_OPT(argv[i], "-h", "--help")) {
-			ABORT_WAS_ERROR = 0;
 			goto help;
 		} else if (CHECK_OPT(argv[i], "-m", "--mode")) {
 			if (argc > (i + 1)) {
@@ -295,10 +312,10 @@ char_err:
 	return o;
 abort:
 	fprintf(stderr, "%s\n", err);
+	o->err = 1;
 help:
-	PARSE_ABORT = 1;
-	free(o);
-	return NULL;
+	o->err += 1;
+	return o;
 }
 
 /*
