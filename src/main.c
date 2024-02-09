@@ -14,7 +14,7 @@
 #include "common.h"
 
 #define PACKAGE "pad"
-#define VERSION "0.3.0"
+#define VERSION "0.3.1"
 #define PACKAGE_BUGREPORT "zocker@10zen.eu"
 
 #define MODE_LEFT 0x00
@@ -120,15 +120,17 @@ int ceildiv(int dividend, int divisor)
 	return ((double)ret < result) ? ++ret : ret;
 }
 
-/*
- * Parse options, if parsing is aborted print usage and exit
- * If parsing is not aborted allocate a string of length + 1
- * and call pad_{{MODE}}; Print the result and free the options
- * and the allocated string.
+/**
+ * main() - Main function
  *
- * Returns 0 on success and ABORT_WAS_ERROR on failure
- * Per default ABORT_WAS_ERROR is 1, but is set to 0 if 'help'
- * aborted parsing
+ * @argc: Number of arguments
+ * @argv: Argument array
+ *
+ * Parses the options, does the padding and then prints the result.
+ *
+ * Returns:
+ * * 0, if successfull
+ * * 1, if not
  */
 int main(int argc, char **argv)
 {
@@ -214,14 +216,19 @@ int main(int argc, char **argv)
 	return 0;
 }
 
-/*
- * Parses argv to look for any encountered options
- * If there is an error with the option, the error is printed
- * to stderr and the parsing is aborted, in which case parse
- * returns NULL. If the options is 'help' the parsing is also
- * aborted, but no error is printed and ABORT_WAS_ERROR is set to 0.
+/**
+ * parse() - Parse commandline options
  *
- * RETURNS NULL IF ABORTED, CHECK PARSE_ABORT BEFORE USING RETURN VALUE
+ * @argc: Number of arguments
+ * @argv: Argument array
+ *
+ * Check every element of @argv, but the first, to see if it is one of our defined
+ * arguments and set the coressponding values for the struct otpions. Parsing ends
+ * early if given the help flag.
+ *
+ * Returns:
+ * * a struct options with all necessary data
+ * * NULL on allocation failure
  */
 struct options *parse(int argc, char **argv)
 {
@@ -316,18 +323,20 @@ help:
 	return o;
 }
 
-/*
- * Searches the command line arguments for the last freestanding
- * string, that is the last string that is not a recognized option
- * or an argument to a recognized option. Since this is called after
- * parsing we know that all set options are valid and we just can
- * increment the index if they are encountered.
+/**
+ * last_standalone() - Return the last standalone argument
  *
- * Returns either the found string or an empty string.
- * Since we cannot distinguish between an actual empty string as
- * argument and the case of not having a last string.
- * empty strings are treated as no argument in parse() and need to
- * be passed to pad with -s instead.
+ * @argc: Number of arguments
+ * @argv: Argument array
+ *
+ * For every element of @argv, after the first one, check if its free standing,
+ * i.e. it is not an option to one of the arguments. If it is free standing, keep
+ * track of it until we hit the next one and replace it.
+ *
+ * Since this uses an empty char * to keep track of standalones empty strings
+ * have to be padded with the explicit option.
+ *
+ * Returns: Either the last standalone string or an empty string
  */
 char *last_standalone(int argc, char **argv)
 {
@@ -345,10 +354,15 @@ char *last_standalone(int argc, char **argv)
 	return s;
 }
 
-/*
- * A simple function that takes in a string as an argument
- * and retunrs an integer. This is used to 'quickly' decide
- * the requested padding mode.
+/**
+ * hash() - Quick and dirty switch-hack
+ *
+ * @c: A string
+ *
+ * To use a switch when selection the mode, @c needs to be a integer. For that
+ * we use this function to strcasecmp() @c to see which mode is requested.
+ *
+ * Returns: The mode-integer
  */
 int hash(char *c)
 {
