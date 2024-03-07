@@ -366,13 +366,13 @@ char *last_standalone(int argc, char **argv)
  */
 int hash(char *c)
 {
-	if (!strcasecmp(c, "left")) {
+	if (!strncasecmp(c, "left", 4)) {
 		return MODE_LEFT;
-	} else if (!strcasecmp(c, "right")) {
+	} else if (!strncasecmp(c, "right", 5)) {
 		return MODE_RIGHT;
-	} else if (!strcasecmp(c, "both")) {
+	} else if (!strncasecmp(c, "both", 4)) {
 		return MODE_BOTH;
-	} else if (!strcasecmp(c, "center") || !strcasecmp(c, "centre")) {
+	} else if (!strncasecmp(c, "center", 6) || !strncasecmp(c, "centre", 6)) {
 		return MODE_CENTRE;
 	}
 
