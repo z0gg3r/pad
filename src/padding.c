@@ -148,7 +148,7 @@ char *padding(int size, char *p)
 	utf8_int_string(utf8_char_int(p), tmp);
 
 	int tmp_len = strlen(tmp);
-	// Size is # chars not # bytes, so if we have an utf8 `char`
+	// Size is # chars, not # bytes --- so if we have an utf8 `char`
 	// of length 1, that is not also strlen 1, we multiply size
 	// by the length of the string (that is the # bytes in the
 	// string)
@@ -166,7 +166,7 @@ char *padding(int size, char *p)
 
 	// Copy the `character` into `s`
 	// Cannot use strncat since that fucks the string up
-	// Since the `character` may be multi-byte, we can't
+	// and since the `character` may be multi-byte, we can't
 	// just do `s[i] = tmp` :(
 	for (int i = 0; i < size - tmp_len; i += tmp_len)
 		for (int j = 0; j < tmp_len; ++j)
