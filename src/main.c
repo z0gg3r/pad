@@ -174,7 +174,7 @@ int main(int argc, char **argv)
 		if ((ws = get_winsize()) == -1) {
 			// There was some error during execution of get_winsize
 			// What went wrong was printed to stderr, so we just free
-			// p and goto failure
+			// p and o, and return 1
 			free(p);
 			free(o);
 
