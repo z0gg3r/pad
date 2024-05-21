@@ -12,6 +12,10 @@ E.g. for linux on amd64 do:
 
 Then just type make (or make install).
 
+Note: For checking with valgrind copy linux-amd64-debug
+or define _PAD_DEBUG. Otherwise valgrind will fail, due
+to the seccomp filter.
+
 ## Known Bugs
 
 There are no known bugs at the moment
