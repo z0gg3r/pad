@@ -1,5 +1,5 @@
-/* SPDX-License-Identifier: Zlib */
-/*
+/* SPDX-License-Identifier: Zlib
+ * SPDX-FileCopyrightText: 2009-2024 pwmt.org, 2024 zocker
  * seccomp filtering
  *
  * stolen from zathura
