@@ -8,7 +8,7 @@ CFLAGS = -pipe -march=native -O2 \
          -fstack-clash-protection \
          -Wformat=2 -Wtrampolines \
          -Wimplicit-fallthrough \
-         -pedantic -pedantic-errors -Wall -Wextra
+         -pedantic -pedantic-errors -Wall -Wextra -lseccomp
 
 LDFLAGS = -Wl,-z,defs -Wl,-z,now -Wl,-z,relro -Wl,-z,nodlopen -Wl,-z,noexecstack
 

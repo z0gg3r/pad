@@ -12,6 +12,7 @@
 #include <unistd.h>
 #include "padding.h"
 #include "common.h"
+#include "seccomp.h"
 
 #define PACKAGE "pad"
 #define VERSION "0.3.1"
@@ -134,6 +135,10 @@ int ceildiv(int dividend, int divisor)
  */
 int main(int argc, char **argv)
 {
+#ifndef _PAD_DEBUG
+	if (seccomp_enable_strict_filter() != 0)
+		return 1;
+#endif
 	struct options *o = parse(argc, argv);
 
 	if (!o)

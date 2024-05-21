@@ -1,0 +1,6 @@
+CFLAGS = -g -O0 -lseccomp -D_PAD_DEBUG
+LDFLAGS =
+
+DESTDIR ?= /usr/local
+BINDIR ?= $(DESTDIR)/bin
+MANDIR ?= $(DESTDIR)/share/man/man1
