@@ -15,7 +15,7 @@
 #include "seccomp.h"
 
 #define PACKAGE "pad"
-#define VERSION "0.3.1"
+#define VERSION "0.4.0"
 #define PACKAGE_BUGREPORT "zocker@10zen.eu"
 
 #define MODE_LEFT 0x00
