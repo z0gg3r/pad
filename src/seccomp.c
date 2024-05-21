@@ -26,8 +26,10 @@
 #define ALLOW_RULE(call) ADD_RULE("allow", SCMP_ACT_ALLOW, call, 0)
 #define ALLOW_ONLY_RULE(call, ...) ADD_RULE("allow", SCMP_ACT_ALLOW, call, 1, __VA_ARGS__)
 #define ERRNO_RULE(call) ADD_RULE("errno", SCMP_ACT_ERRNO(ENOSYS), call, 0)
+#define CMP_READ_ONLY SCMP_CMP(2, SCMP_CMP_MASKED_EQ, O_RDONLY, 0)
+#define CMP_WRITE_FD(fd) SCMP_CMP(0, SCMP_CMP_EQ, fd)
 
-int seccomp_enable_strict_filter(void)
+int enable_seccomp(void)
 {
 	/* prevent child processes from getting more priv e.g. via setuid, capabilities, ... */
 	if (prctl(PR_SET_NO_NEW_PRIVS, 1, 0, 0, 0)) {
@@ -50,19 +52,14 @@ int seccomp_enable_strict_filter(void)
 	ALLOW_RULE(exit);
 	ALLOW_RULE(exit_group);
 	ALLOW_RULE(read);
-	ALLOW_RULE(ioctl); /* ioctl -- TODO: restrict */
 	ALLOW_RULE(brk);
-	ALLOW_RULE(mmap);
-	ALLOW_RULE(munmap);
-	ALLOW_RULE(mprotect);
-	ALLOW_RULE(pread64);
 	ALLOW_RULE(fstat);
 
 	/* Specific rules */
-	ALLOW_ONLY_RULE(open, SCMP_CMP(2, SCMP_CMP_MASKED_EQ, O_RDONLY, 0));
-	ALLOW_ONLY_RULE(openat, SCMP_CMP(2, SCMP_CMP_MASKED_EQ, O_RDONLY, 0));
-	ALLOW_ONLY_RULE(write, SCMP_CMP(0, SCMP_CMP_EQ, 1));
-	ALLOW_ONLY_RULE(write, SCMP_CMP(0, SCMP_CMP_EQ, 2));
+	ALLOW_ONLY_RULE(open, CMP_READ_ONLY);
+	ALLOW_ONLY_RULE(openat, CMP_READ_ONLY);
+	ALLOW_ONLY_RULE(write, CMP_WRITE_FD(1));
+	ALLOW_ONLY_RULE(write, CMP_WRITE_FD(2));
 
 	/* applying filter... */
 	if (seccomp_load(ctx) >= 0) {
