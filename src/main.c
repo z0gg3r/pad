@@ -12,7 +12,7 @@
 #include <unistd.h>
 #include "padding.h"
 #include "common.h"
-#include "seccomp.h"
+#include "pad-seccomp.h"
 
 #define PACKAGE "pad"
 #define VERSION "0.4.2"

@@ -5,7 +5,7 @@
  * stolen from zathura
  */
 
-#include "seccomp.h"
+#include "pad-seccomp.h"
 
 #include <seccomp.h> /* libseccomp */
 #include <sys/prctl.h> /* prctl */
