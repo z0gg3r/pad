@@ -10,12 +10,13 @@
 #include <fcntl.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <errno.h>
 #include "padding.h"
 #include "common.h"
 #include "pad-seccomp.h"
 
 #define PACKAGE "pad"
-#define VERSION "0.4.2"
+#define VERSION "0.4.3"
 #define PACKAGE_BUGREPORT "zocker@10zen.eu"
 
 #define MODE_LEFT 0x00
@@ -41,7 +42,7 @@
  * @abort: Was parsing aborted
  */
 struct options {
-	int length;
+	size_t length;
 	char *padding_char;
 	int mode;
 	char *s;
@@ -259,7 +260,12 @@ struct options *parse(int argc, char **argv)
 		if (CHECK_OPT(argv[i], "-l", "--length")) {
 			if (argc > (i + 1)) {
 				flag_length = 1;
-				o->length = atoi(argv[i + 1]);
+				char *tmp;
+				o->length = strtoull(argv[i + 1], &tmp, 0);
+				if (argv[i + 1] == tmp || errno == ERANGE) {
+					err = "Invalid length passed to -l!";
+					goto abort;
+				}
 				++i;
 			} else {
 				err = "-l was set, but no length was given.";

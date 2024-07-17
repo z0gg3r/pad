@@ -23,7 +23,7 @@
  * * 0 on success
  * * 1 on failure or str_buf overflow
  */
-int pad_left(char *s, int size, struct str_buf *p, char *padding_char)
+int pad_left(char *s, size_t size, struct str_buf *p, char *padding_char)
 {
 	size_t slen = utf8_strlen(s);
 	if (slen >= (size_t)size) {
@@ -60,7 +60,7 @@ int pad_left(char *s, int size, struct str_buf *p, char *padding_char)
  *
  * See pad_left()
  */
-int pad_both(char *s, int size, struct str_buf *p, char *padding_char)
+int pad_both(char *s, size_t size, struct str_buf *p, char *padding_char)
 {
 	size_t slen = utf8_strlen(s);
 	if (slen >= (size_t)size) {
@@ -100,7 +100,7 @@ int pad_both(char *s, int size, struct str_buf *p, char *padding_char)
  *
  * See pad_left()
  */
-int pad_right(char *s, int size, struct str_buf *p, char *padding_char)
+int pad_right(char *s, size_t size, struct str_buf *p, char *padding_char)
 {
 	size_t slen = utf8_strlen(s);
 	if (slen >= (size_t)size) {
@@ -136,7 +136,7 @@ int pad_right(char *s, int size, struct str_buf *p, char *padding_char)
  * * A padded string
  * * NULL on any error
  */
-char *padding(int size, char *p)
+char *padding(size_t size, char *p)
 {
 	char *tmp = calloc(CHAR_WIDTH, sizeof(char));
 
@@ -168,7 +168,7 @@ char *padding(int size, char *p)
 	// Cannot use strncat since that fucks the string up
 	// and since the `character` may be multi-byte, we can't
 	// just do `s[i] = tmp` :(
-	for (int i = 0; i < size - tmp_len; i += tmp_len)
+	for (size_t i = 0; i < size - tmp_len; i += tmp_len)
 		for (int j = 0; j < tmp_len; ++j)
 			s[i + j] = tmp[j];
 	s[size] = '\0';
