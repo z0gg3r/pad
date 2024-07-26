@@ -16,7 +16,7 @@
 #include "pad-seccomp.h"
 
 #define PACKAGE "pad"
-#define VERSION "0.4.3"
+#define VERSION "0.5.0"
 #define PACKAGE_BUGREPORT "zocker@10zen.eu"
 
 #define MODE_LEFT 0x00
@@ -47,6 +47,7 @@ struct options {
 	int mode;
 	char *s;
 	int err;
+	char merged_argv;
 };
 
 // Functions
@@ -56,6 +57,8 @@ int hash(char *);
 void print_usage(void);
 int get_winsize(void);
 int ceildiv(int, int);
+char *merge_argv(int, char **, int);
+size_t slen_args(int, char **, int);
 
 /**
  * print_usage() - Print usage information to stderr
@@ -150,6 +153,8 @@ int main(int argc, char **argv)
 	if (o->err) {
 		print_usage();
 		int exit_code = o->err - 1;
+		if (o->merged_argv)
+			free(o->s);
 		free(o);
 		return exit_code;
 	}
@@ -164,6 +169,8 @@ int main(int argc, char **argv)
 
 	if (!p) {
 		perror(PACKAGE);
+		if (o->merged_argv)
+			free(o->s);
 		free(o);
 		return 1;
 	}
@@ -186,6 +193,8 @@ int main(int argc, char **argv)
 			// What went wrong was printed to stderr, so we just free
 			// p and o, and return 1
 			free(p);
+			if (o->merged_argv)
+				free(o->s);
 			free(o);
 
 			return 1;
@@ -215,6 +224,8 @@ int main(int argc, char **argv)
 	}
 
 	if (!p) {
+		if (o->merged_argv)
+			free(o->s);
 		free(o);
 		return 1;
 	}
@@ -222,6 +233,8 @@ int main(int argc, char **argv)
 	printf("%s\n", str_buf_str(&s));
 
 	free(s.data);
+	if (o->merged_argv)
+		free(o->s);
 	free(o);
 	return 0;
 }
@@ -256,7 +269,8 @@ struct options *parse(int argc, char **argv)
 	int flag_mode = 0;
 	int flag_string = 0;
 
-	for (int i = 1; i < argc; ++i) {
+	int i;
+	for (i = 1; i < argc; ++i) {
 		if (CHECK_OPT(argv[i], "-l", "--length")) {
 			if (argc > (i + 1)) {
 				flag_length = 1;
@@ -304,9 +318,17 @@ char_err:
 				err = "-s was set, but no string was given";
 				goto abort;
 			}
+		} else if (CHECK_OPT(argv[i], "--", "--")) {
+			o->merged_argv = (char)1;
+			++i;
+			goto skip;
+		} else if (argv[i][0] == '-') {
+			err = "Unknown argument";
+			goto abort;
 		}
 	}
 
+skip:
 	if (flag_length && o->length < 1) {
 		err = "Length should be a non-zero positive integer.";
 		goto abort;
@@ -321,7 +343,13 @@ char_err:
 	if (!flag_mode)
 		o->mode = DEFAULT_MODE;
 
-	if (!flag_string) {
+	if (o->merged_argv) {
+		o->s = merge_argv(argc, argv, i);
+		if (!o->s) {
+			err = "Tried to merge argv, but failed!";
+			goto abort;
+		}
+	} else if (!flag_string) {
 		o->s = last_standalone(argc, argv);
 		if (!strcmp(o->s, "")) {
 			err = "No string was passed. If you want to pad an empty string, please use --string";
@@ -367,6 +395,70 @@ char *last_standalone(int argc, char **argv)
 	}
 
 	return s;
+}
+
+/**
+ * merge_argv() - Merge arguments
+ *
+ * @argc: Number of arguments
+ * @argv: Argument array
+ * @i: First argument
+ *
+ * Merges all arguments from @i until @argc into one string
+ *
+ * Returns:
+ * * A string
+ * * NULL on any error
+ */
+char *merge_argv(int argc, char **argv, int i)
+{
+	size_t size = EXPAND_SIZE(slen_args(argc, argv, i));
+
+	if (!size)
+		return NULL;
+
+	char *s = calloc(size + CHAR_WIDTH, sizeof(char));
+
+	if (!s) {
+		perror(PACKAGE);
+		return NULL;
+	}
+
+	struct str_buf buf = {
+		.data = s,
+		.size = 0,
+		.len = 0,
+	};
+
+	str_buf_init(&buf, s, size + CHAR_WIDTH);
+
+	for (; i < argc; ++i) {
+		str_buf_cat(&buf, argv[i]);
+		str_buf_cat(&buf, " ");
+	}
+
+	return str_buf_str(&buf);
+}
+
+/**
+ * slen_args() - Length of all strings from i upwards
+ *
+ * @argc: Number of arguments
+ * @argv: Argument array
+ * @i: From where to sum
+ *
+ * Sums all strlen()'s of @argv from @i until @argc
+ *
+ * Returns: Sum of strlen()
+ */
+size_t slen_args(int argc, char **argv, int i)
+{
+	size_t size = 0;
+
+	for (; i < argc; ++i)
+		size += strlen(argv[i]);
+
+	return size;
 }
 
 /**
