@@ -24,6 +24,8 @@ check: pad
 	@./pad -m right -l 25 -c "᪥" "String※" | tr -d '\n' | wc -m
 	@./pad -m both -l 25 -c "᪥" "String※" | tr -d '\n' | wc -m
 	@./pad -m centre -c " " "This should be (visually) centred"
+	@./pad -m centre -l 25 -c "᪥" -- This should not return an error --help
+	@./pad -m centre -l 25 -c "᪥" --invalid-argument || printf 'Returned error as expected\n'
 
 test: pad
 	@echo Checking pad with mode left
@@ -34,6 +36,10 @@ test: pad
 	@valgrind $(VALGRIND_FLAGS) ./pad -m both -l 25 -c "᪥" "String※"
 	@echo Checking pad with mode centre
 	@valgrind $(VALGRIND_FLAGS) ./pad -m centre -l 25 -c "᪥" "String※"
+	@echo This should not return an error
+	@valgrind $(VALGRIND_FLAGS) ./pad -m centre -l 25 -c "᪥" -- "String"
+	@echo This should return an error
+	@valgrind $(VALGRIND_FALGS) ./pad -m centre -l 25 -c "᪥" --invalid-argument -- "String" || true
 
 clean:
 	@rm -f pad
