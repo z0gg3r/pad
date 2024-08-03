@@ -31,7 +31,7 @@ void str_buf_cat(struct str_buf *s, char *b)
 	if (!data || !max_size)
 		return;
 
-	strncat(data, b, max_size);
+	memccpy(data, b, '\0', max_size);
 
 	if (b_size > max_size)
 		b_size = -1;
