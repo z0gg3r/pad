@@ -12,6 +12,8 @@
 
 #include <stddef.h>
 
+#define CHAR_WIDTH 5
+#define EXPAND_SIZE(x) x * CHAR_WIDTH
 #define min(x, y) (x < y) ? x : y
 
 struct str_buf {
