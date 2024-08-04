@@ -147,7 +147,7 @@ char *padding(size_t size, char *p)
 
 	utf8_int_string(utf8_char_int(p), tmp);
 
-	int tmp_len = strnlen(tmp, EXPAND_SIZE(CHAR_WIDTH));
+	int tmp_len = strnlen(tmp, CHAR_WIDTH);
 	// Size is # chars, not # bytes --- so if we have an utf8 `char`
 	// of length 1, that is not also strlen 1, we multiply size
 	// by the length of the string (that is the # bytes in the
