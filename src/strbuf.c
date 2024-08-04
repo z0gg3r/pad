@@ -9,10 +9,12 @@
  * @s: The managed cstring
  * @b: The cstring to add
  *
- * First we get the size of @b with strlen() (we care about the number of
- * bytes in @b, not the number of chars) and get a temporary buffer-handle
- * into @s->data. If that is not possible (because @s->data has overflowed),
- * we do nothing. Else we call strncat() with the now assembled arguments.
+ * First we get the size of @b with strnlen() (we care about the number of
+ * bytes in @b, not the number of chars and if @b is larger than the space
+ * allocated for @s , we only care that it _is_ bigger) and get a temporary
+ * buffer-handle  into @s->data. If that is not possible (because @s->data
+ * has overflowed), we do nothing. Else we call strncat() with the now
+ * assembled arguments.
  *
  * Lastly we have to commit the written data, so we first check if the length
  * of @b is larger than the max_size we can use for @s->data and assing -1
@@ -23,10 +25,10 @@
  */
 void str_buf_cat(struct str_buf *s, char *b)
 {
-	size_t b_size = strlen(b);
-
 	char *data = NULL;
 	size_t max_size = str_buf_get_buf(s, &data);
+	size_t b_size = strnlen(b, max_size + CHAR_WIDTH);
+
 
 	if (!data || !max_size)
 		return;
