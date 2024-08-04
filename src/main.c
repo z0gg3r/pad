@@ -288,7 +288,7 @@ struct options *parse(int argc, char **argv)
 		} else if (CHECK_OPT(argv[i], "-c", "--char")) {
 			if (argc > (i + 1)) {
 				if (strlen(argv[i + 1]) == 0)
-						goto char_err;
+					goto char_err;
 
 				flag_char = 1;
 				o->padding_char = argv[i + 1];
@@ -479,7 +479,8 @@ int hash(char *c)
 		return MODE_RIGHT;
 	} else if (!strncasecmp(c, "both", 4)) {
 		return MODE_BOTH;
-	} else if (!strncasecmp(c, "center", 6) || !strncasecmp(c, "centre", 6)) {
+	} else if (!strncasecmp(c, "center", 6) ||
+		   !strncasecmp(c, "centre", 6)) {
 		return MODE_CENTRE;
 	}
 
