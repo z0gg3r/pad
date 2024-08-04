@@ -4,7 +4,7 @@ CC = gcc
 
 VALGRIND_FLAGS = --leak-check=full --show-leak-kinds=all -s --track-origins=yes
 
-OBJQ = main.o padding.o wee-utf8.o strbuf.o pad-seccomp.o
+OBJQ = pad.o padding.o wee-utf8.o strbuf.o pad-seccomp.o
 
 %.o: src/%.c
 	@echo CC $<
