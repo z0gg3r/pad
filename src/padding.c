@@ -25,7 +25,7 @@
  */
 int pad_left(char *s, size_t size, struct str_buf *p, char *padding_char)
 {
-	size_t slen = utf8_strlen(s);
+	size_t slen = utf8_strnlen(s, size + CHAR_WIDTH);
 	if (slen >= (size_t)size) {
 		str_buf_cat(p, s);
 		return str_buf_has_overflowed(p);
@@ -62,7 +62,7 @@ int pad_left(char *s, size_t size, struct str_buf *p, char *padding_char)
  */
 int pad_both(char *s, size_t size, struct str_buf *p, char *padding_char)
 {
-	size_t slen = utf8_strlen(s);
+	size_t slen = utf8_strnlen(s, size + CHAR_WIDTH);
 	if (slen >= (size_t)size) {
 		str_buf_cat(p, s);
 		return str_buf_has_overflowed(p);
@@ -102,7 +102,7 @@ int pad_both(char *s, size_t size, struct str_buf *p, char *padding_char)
  */
 int pad_right(char *s, size_t size, struct str_buf *p, char *padding_char)
 {
-	size_t slen = utf8_strlen(s);
+	size_t slen = utf8_strnlen(s, size + CHAR_WIDTH);
 	if (slen >= (size_t)size) {
 		str_buf_cat(p, s);
 		return str_buf_has_overflowed(p);
@@ -130,7 +130,7 @@ int pad_right(char *s, size_t size, struct str_buf *p, char *padding_char)
  *
  * First we calculate how much space the padding string will take by checking
  * if @p is of length one or of utf8-length one and then multiplying by both @size
- * and strlen(). Then we copy @p into the buffer @size times.
+ * and strnlen(). Then we copy @p into the buffer @size times.
  *
  * Returns:
  * * A padded string
@@ -147,12 +147,12 @@ char *padding(size_t size, char *p)
 
 	utf8_int_string(utf8_char_int(p), tmp);
 
-	int tmp_len = strlen(tmp);
+	int tmp_len = strnlen(tmp, EXPAND_SIZE(CHAR_WIDTH));
 	// Size is # chars, not # bytes --- so if we have an utf8 `char`
 	// of length 1, that is not also strlen 1, we multiply size
 	// by the length of the string (that is the # bytes in the
 	// string)
-	if (utf8_strlen(tmp) == 1 && tmp_len != 1)
+	if (utf8_strnlen(tmp, CHAR_WIDTH) == 1 && tmp_len != 1)
 		size *= tmp_len;
 
 	char *s = calloc(size + 1, sizeof(char));
