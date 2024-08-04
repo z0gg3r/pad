@@ -29,7 +29,6 @@ void str_buf_cat(struct str_buf *s, char *b)
 	size_t max_size = str_buf_get_buf(s, &data);
 	size_t b_size = strnlen(b, max_size + CHAR_WIDTH);
 
-
 	if (!data || !max_size)
 		return;
 
