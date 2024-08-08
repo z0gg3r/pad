@@ -21,14 +21,14 @@
  *
  * Returns:
  * * 0 on success
- * * 1 on failure or str_buf overflow
+ * * 1 on failure or strbuf overflow
  */
-int pad_left(char *s, size_t size, struct str_buf *p, char *padding_char)
+int pad_left(char *s, size_t size, struct strbuf *p, char *padding_char)
 {
 	size_t slen = utf8_strnlen(s, size + CHAR_WIDTH);
 	if (slen >= (size_t)size) {
-		str_buf_cat(p, s);
-		return str_buf_has_overflowed(p);
+		strbuf_cat(p, s);
+		return strbuf_has_overflowed(p);
 	}
 
 	char *buf = padding(size - slen + 1, padding_char);
@@ -37,11 +37,11 @@ int pad_left(char *s, size_t size, struct str_buf *p, char *padding_char)
 		return 0;
 	}
 
-	str_buf_cat(p, buf);
-	str_buf_cat(p, s);
+	strbuf_cat(p, buf);
+	strbuf_cat(p, s);
 
 	free(buf);
-	return str_buf_has_overflowed(p);
+	return strbuf_has_overflowed(p);
 }
 
 /**
@@ -56,16 +56,16 @@ int pad_left(char *s, size_t size, struct str_buf *p, char *padding_char)
  *
  * Returns:
  * * 0 on success
- * * 1 on failure or str_buf overflow
+ * * 1 on failure or strbuf overflow
  *
  * See pad_left()
  */
-int pad_both(char *s, size_t size, struct str_buf *p, char *padding_char)
+int pad_both(char *s, size_t size, struct strbuf *p, char *padding_char)
 {
 	size_t slen = utf8_strnlen(s, size + CHAR_WIDTH);
 	if (slen >= (size_t)size) {
-		str_buf_cat(p, s);
-		return str_buf_has_overflowed(p);
+		strbuf_cat(p, s);
+		return strbuf_has_overflowed(p);
 	}
 	int b_size = (size - slen) / 2;
 
@@ -75,13 +75,13 @@ int pad_both(char *s, size_t size, struct str_buf *p, char *padding_char)
 		return 0;
 	}
 
-	str_buf_cat(p, buf);
-	str_buf_cat(p, s);
-	str_buf_cat(p, buf);
+	strbuf_cat(p, buf);
+	strbuf_cat(p, s);
+	strbuf_cat(p, buf);
 
 	free(buf);
 
-	return str_buf_has_overflowed(p);
+	return strbuf_has_overflowed(p);
 }
 
 /**
@@ -96,16 +96,16 @@ int pad_both(char *s, size_t size, struct str_buf *p, char *padding_char)
  *
  * Returns:
  * * 0 on success
- * * 1 on failure or str_buf overflow
+ * * 1 on failure or strbuf overflow
  *
  * See pad_left()
  */
-int pad_right(char *s, size_t size, struct str_buf *p, char *padding_char)
+int pad_right(char *s, size_t size, struct strbuf *p, char *padding_char)
 {
 	size_t slen = utf8_strnlen(s, size + CHAR_WIDTH);
 	if (slen >= (size_t)size) {
-		str_buf_cat(p, s);
-		return str_buf_has_overflowed(p);
+		strbuf_cat(p, s);
+		return strbuf_has_overflowed(p);
 	}
 
 	char *buf = padding(size - slen + 1, padding_char);
@@ -114,12 +114,12 @@ int pad_right(char *s, size_t size, struct str_buf *p, char *padding_char)
 		return 0;
 	}
 
-	str_buf_cat(p, s);
-	str_buf_cat(p, buf);
+	strbuf_cat(p, s);
+	strbuf_cat(p, buf);
 
 	free(buf);
 
-	return str_buf_has_overflowed(p);
+	return strbuf_has_overflowed(p);
 }
 
 /**

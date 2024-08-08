@@ -159,7 +159,7 @@ int main(int argc, char **argv)
 		return exit_code;
 	}
 
-	struct str_buf s = {
+	struct strbuf s = {
 		.data = NULL,
 		.size = 0,
 		.len = 0,
@@ -175,7 +175,7 @@ int main(int argc, char **argv)
 		return 1;
 	}
 
-	str_buf_init(&s, p, EXPAND_SIZE(o->length) + CHAR_WIDTH);
+	strbuf_init(&s, p, EXPAND_SIZE(o->length) + CHAR_WIDTH);
 
 	switch (o->mode) {
 	case MODE_LEFT:
@@ -215,9 +215,9 @@ int main(int argc, char **argv)
 			return 1;
 		}
 
-		str_buf_init(&s, p, len + CHAR_WIDTH);
+		strbuf_init(&s, p, len + CHAR_WIDTH);
 		pad_left("", left, &s, o->padding_char);
-		str_buf_cat(&s, o->s);
+		strbuf_cat(&s, o->s);
 	} break;
 	default:
 		pad_both(o->s, o->length, &s, o->padding_char);
@@ -230,7 +230,7 @@ int main(int argc, char **argv)
 		return 1;
 	}
 
-	printf("%s\n", str_buf_str(&s));
+	printf("%s\n", strbuf_str(&s));
 
 	free(s.data);
 	if (o->merged_argv)
@@ -424,20 +424,20 @@ char *merge_argv(int argc, char **argv, int i)
 		return NULL;
 	}
 
-	struct str_buf buf = {
+	struct strbuf buf = {
 		.data = s,
 		.size = 0,
 		.len = 0,
 	};
 
-	str_buf_init(&buf, s, size + CHAR_WIDTH);
+	strbuf_init(&buf, s, size + CHAR_WIDTH);
 
 	for (; i < argc; ++i) {
-		str_buf_cat(&buf, argv[i]);
-		str_buf_cat(&buf, " ");
+		strbuf_cat(&buf, argv[i]);
+		strbuf_cat(&buf, " ");
 	}
 
-	return str_buf_str(&buf);
+	return strbuf_str(&buf);
 }
 
 /**

@@ -7,9 +7,9 @@
 #include "common.h"
 
 // input, size of result, result string, padding
-int pad_left(char *, size_t, struct str_buf *, char *);
-int pad_right(char *, size_t, struct str_buf *, char *);
-int pad_both(char *, size_t, struct str_buf *, char *);
+int pad_left(char *, size_t, struct strbuf *, char *);
+int pad_right(char *, size_t, struct strbuf *, char *);
+int pad_both(char *, size_t, struct strbuf *, char *);
 char *padding(size_t, char *);
 
 #endif

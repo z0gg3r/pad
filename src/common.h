@@ -4,7 +4,7 @@
 // Modifications are:
 // - Replacing seq_ with str_
 // - Renaming 'buffer' to 'data'
-// - Adding str_buf_cat()
+// - Adding strbuf_cat()
 // - Dropping some kernel-specific stuff (like WARN_ON)
 // - Dropping all functions w/o bodies in the header
 #ifndef COMMON_H
@@ -16,57 +16,57 @@
 #define EXPAND_SIZE(x) x * CHAR_WIDTH
 #define min(x, y) (x < y) ? x : y
 
-struct str_buf {
+struct strbuf {
 	char *data; /* The wrapped string */
 	size_t size; /* Maximum size of data */
 	size_t len; /* Current length of data */
 };
 
-void str_buf_cat(struct str_buf *, char *);
+void strbuf_cat(struct strbuf *, char *);
 
-static inline void str_buf_clear(struct str_buf *s)
+static inline void strbuf_clear(struct strbuf *s)
 {
 	s->len = 0;
 	if (s->size)
 		s->data[0] = '\0';
 }
 
-static inline void str_buf_init(struct str_buf *s, char *data, size_t size)
+static inline void strbuf_init(struct strbuf *s, char *data, size_t size)
 {
 	s->data = data;
 	s->size = size;
-	str_buf_clear(s);
+	strbuf_clear(s);
 }
 
-static inline int str_buf_has_overflowed(struct str_buf *s)
+static inline int strbuf_has_overflowed(struct strbuf *s)
 {
 	return s->len > s->size;
 }
 
-static inline void str_buf_set_overflow(struct str_buf *s)
+static inline void strbuf_set_overflow(struct strbuf *s)
 {
 	s->len = s->size + 1;
 }
 
-static inline size_t str_buf_buffer_left(struct str_buf *s)
+static inline size_t strbuf_buffer_left(struct strbuf *s)
 {
-	if (str_buf_has_overflowed(s))
+	if (strbuf_has_overflowed(s))
 		return 0;
 
 	return s->size - s->len;
 }
 
-static inline size_t str_buf_used(struct str_buf *s)
+static inline size_t strbuf_used(struct strbuf *s)
 {
 	return min(s->len, s->size);
 }
 
-static inline char *str_buf_str(struct str_buf *s)
+static inline char *strbuf_str(struct strbuf *s)
 {
 	if (!s->size)
 		return "";
 
-	if (str_buf_buffer_left(s))
+	if (strbuf_buffer_left(s))
 		s->data[s->len] = '\0';
 	else
 		s->data[s->size - 1] = '\0';
@@ -74,7 +74,7 @@ static inline char *str_buf_str(struct str_buf *s)
 	return s->data;
 }
 
-static inline size_t str_buf_get_buf(struct str_buf *s, char **bufp)
+static inline size_t strbuf_get_buf(struct strbuf *s, char **bufp)
 {
 	if (s->len < s->size) {
 		*bufp = s->data + s->len;
@@ -87,10 +87,10 @@ static inline size_t str_buf_get_buf(struct str_buf *s, char **bufp)
 	return 0;
 }
 
-static inline void str_buf_commit(struct str_buf *s, int num)
+static inline void strbuf_commit(struct strbuf *s, int num)
 {
 	if (num < 0)
-		str_buf_set_overflow(s);
+		strbuf_set_overflow(s);
 	else
 		s->len += num;
 }

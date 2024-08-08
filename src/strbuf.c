@@ -4,7 +4,7 @@
 #include "common.h"
 
 /**
- * str_buf_cat() - Concatenate a string onto a str_buf-managed string
+ * strbuf_cat() - Concatenate a string onto a strbuf-managed string
  *
  * @s: The managed cstring
  * @b: The cstring to add
@@ -18,15 +18,15 @@
  *
  * Lastly we have to commit the written data, so we first check if the length
  * of @b is larger than the max_size we can use for @s->data and assing -1
- * if that is the case, so we can simplify our call to str_buf_commit() to
+ * if that is the case, so we can simplify our call to strbuf_commit() to
  * one.
  *
- * See also: str_buf_get_buf() and str_buf_commit()
+ * See also: strbuf_get_buf() and strbuf_commit()
  */
-void str_buf_cat(struct str_buf *s, char *b)
+void strbuf_cat(struct strbuf *s, char *b)
 {
 	char *data = NULL;
-	size_t max_size = str_buf_get_buf(s, &data);
+	size_t max_size = strbuf_get_buf(s, &data);
 	size_t b_size = strnlen(b, max_size + CHAR_WIDTH);
 
 	if (!data || !max_size)
@@ -37,5 +37,5 @@ void str_buf_cat(struct str_buf *s, char *b)
 	if (b_size > max_size)
 		b_size = -1;
 
-	str_buf_commit(s, b_size);
+	strbuf_commit(s, b_size);
 }
