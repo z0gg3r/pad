@@ -20,7 +20,7 @@ compile_binary_prodish()
 		-fsanitize=address \
 		-pedantic -pedantic-errors -Wall -Wextra -lseccomp -Wl,-z,defs \
 		-Wl,-z,now -Wl,-z,relro -Wl,-z,nodlopen -Wl,-z,noexecstack \
-		../src/*.c -o binary
+		src/*.c -o binary
 }
 
 
@@ -46,7 +46,7 @@ run_tests_debug()
 		if [ "$(run_test "$testcase")" = "$VALGRIND_ERROR_EXIT" ]
 		then
 			failed_tests=$((failed_tests + 1))
-			printf 'TEST NO. %b FAILED!\n' "$i"
+			printf 'TEST NO. %b (%b) FAILED!\n' "$i" "$testcase"
 		fi
 		i=$((i + 1))
 	done
@@ -65,7 +65,7 @@ run_tests_prodish()
 		if [ "$(run_test "$testcase")" = "$VALGRIND_ERROR_EXIT" ]
 		then
 			failed_tests=$((failed_tests + 1))
-			printf 'TEST NO. %b FAILED!\n' "$i"
+			printf 'TEST NO. %b (%b) FAILED!\n' "$i" "$testcase"
 		fi
 		i=$((i + 1))
 	done
