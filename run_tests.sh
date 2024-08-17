@@ -3,13 +3,20 @@
 TEST_INPUT_COUNT="$(find tests -type f | wc -l)"
 VALGRIND_ERROR_EXIT="$(shuf -i 1-125 -n 1)"
 
+cleanup_binary()
+{
+	rm -f binary
+}
+
 compile_binary_debug()
 {
+	cleanup_binary
 	cc -g -O0 -lseccomp -D_PAD_DEBUG src/*.c -o binary
 }
 
 compile_binary_prodish()
 {
+	cleanup_binary
 	cc -g -O2 -lseccomp -D_PAD_DEBUG -pipe -march=native -fstack-protector-strong -fcf-protection \
 		-fpie -fPIC -std=c99 -D_DEFAULT_SOURCE -fno-delete-null-pointer-checks \
 		-fno-strict-overflow -fno-strict-aliasing \
@@ -71,6 +78,6 @@ run_tests_prodish()
 	done
 }
 
-
+trap cleanup_binary QUIT INT TERM EXIT
 run_tests_debug
 run_tests_prodish
