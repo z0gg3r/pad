@@ -30,6 +30,12 @@
 #define DEFAULT_MODE MODE_BOTH
 
 #define CHECK_OPT(x, y, z) !strcmp(x, y) || !strcmp(x, z)
+#define FREE_MERGED_ARGV(x)      \
+	do {                     \
+		if (x) {         \
+			free(x); \
+		}                \
+	} while (0)
 
 /**
  * struct options - All commandline options
@@ -47,7 +53,7 @@ struct options {
 	int mode;
 	char *s;
 	int err;
-	char merged_argv;
+	char *merged_argv;
 };
 
 // Functions
@@ -153,8 +159,7 @@ int main(int argc, char **argv)
 	if (o->err) {
 		print_usage();
 		int exit_code = o->err - 1;
-		if (o->merged_argv)
-			free(o->s);
+		FREE_MERGED_ARGV(o->merged_argv);
 		free(o);
 		return exit_code;
 	}
@@ -169,8 +174,7 @@ int main(int argc, char **argv)
 
 	if (!p) {
 		perror(PACKAGE);
-		if (o->merged_argv)
-			free(o->s);
+		FREE_MERGED_ARGV(o->merged_argv);
 		free(o);
 		return 1;
 	}
@@ -193,8 +197,7 @@ int main(int argc, char **argv)
 			// What went wrong was printed to stderr, so we just free
 			// p and o, and return 1
 			free(p);
-			if (o->merged_argv)
-				free(o->s);
+			FREE_MERGED_ARGV(o->merged_argv);
 			free(o);
 
 			return 1;
@@ -224,8 +227,7 @@ int main(int argc, char **argv)
 	}
 
 	if (!p) {
-		if (o->merged_argv)
-			free(o->s);
+		FREE_MERGED_ARGV(o->merged_argv);
 		free(o);
 		return 1;
 	}
@@ -233,8 +235,7 @@ int main(int argc, char **argv)
 	printf("%s\n", strbuf_str(&s));
 
 	free(s.data);
-	if (o->merged_argv)
-		free(o->s);
+	FREE_MERGED_ARGV(o->merged_argv);
 	free(o);
 	return 0;
 }
@@ -264,10 +265,13 @@ struct options *parse(int argc, char **argv)
 		return NULL;
 	}
 
+	o->merged_argv = NULL; // Ensure that o->merged_argv defaults to NULL
+
 	int flag_length = 0;
 	int flag_char = 0;
 	int flag_mode = 0;
 	int flag_string = 0;
+	int flag_merge = 0;
 
 	int i;
 	for (i = 1; i < argc; ++i) {
@@ -319,7 +323,7 @@ char_err:
 				goto abort;
 			}
 		} else if (CHECK_OPT(argv[i], "--", "--")) {
-			o->merged_argv = (char)1;
+			flag_merge = 1;
 			++i;
 			goto skip;
 		} else if (argv[i][0] == '-') {
@@ -343,12 +347,14 @@ skip:
 	if (!flag_mode)
 		o->mode = DEFAULT_MODE;
 
-	if (o->merged_argv) {
-		o->s = merge_argv(argc, argv, i);
-		if (!o->s) {
+	if (flag_merge) {
+		o->merged_argv = merge_argv(argc, argv, i);
+		if (!o->merged_argv) {
 			err = "Tried to merge argv, but failed!";
 			goto abort;
 		}
+
+		o->s = o->merged_argv;
 	} else if (!flag_string) {
 		o->s = last_standalone(argc, argv);
 		if (!strcmp(o->s, "")) {
