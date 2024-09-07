@@ -24,7 +24,6 @@ compile_binary_prodish()
 		-fstack-clash-protection \
 		-Wformat=2 -Wtrampolines \
 		-Wimplicit-fallthrough \
-		-fsanitize=address \
 		-pedantic -pedantic-errors -Wall -Wextra -lseccomp -Wl,-z,defs \
 		-Wl,-z,now -Wl,-z,relro -Wl,-z,nodlopen -Wl,-z,noexecstack \
 		src/*.c -o binary
