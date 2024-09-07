@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: 2023 zocker <zocker@10zen.eu>
 // SPDX-License-Identifier: GPL-2.0-or-later
 #include <string.h>
-#include "common.h"
+#include "strbuf.h"
 
 /**
  * strbuf_cat() - Concatenate a string onto a strbuf-managed string
@@ -38,4 +38,74 @@ void strbuf_cat(struct strbuf *s, char *b)
 		b_size = -1;
 
 	strbuf_commit(s, b_size);
+}
+
+char *strbuf_str(struct strbuf *s)
+{
+	if (!s->size)
+		return "";
+
+	if (strbuf_buffer_left(s))
+		s->data[s->len] = '\0';
+	else
+		s->data[s->size - 1] = '\0';
+
+	return s->data;
+}
+
+size_t strbuf_get_buf(struct strbuf *s, char **bufp)
+{
+	size_t buffer = strbuf_buffer_left(s);
+
+	if (buffer)
+		*bufp = s->data + s->len;
+	else
+		*bufp = NULL;
+
+	return buffer;
+}
+
+void strbuf_clear(struct strbuf *s)
+{
+	s->len = 0;
+	if (s->size)
+		s->data[0] = '\0';
+}
+
+void strbuf_init(struct strbuf *s, char *data, size_t size)
+{
+	s->data = data;
+	s->size = size;
+	strbuf_clear(s);
+}
+
+int strbuf_has_overflowed(struct strbuf *s)
+{
+	return s->len > s->size;
+}
+
+void strbuf_set_overflow(struct strbuf *s)
+{
+	s->len = s->size + 1;
+}
+
+size_t strbuf_buffer_left(struct strbuf *s)
+{
+	if (strbuf_has_overflowed(s))
+		return 0;
+
+	return s->size - s->len;
+}
+
+size_t strbuf_used(struct strbuf *s)
+{
+	return min(s->len, s->size);
+}
+
+void strbuf_commit(struct strbuf *s, int num)
+{
+	if (num < 0)
+		strbuf_set_overflow(s);
+	else
+		s->len += num;
 }

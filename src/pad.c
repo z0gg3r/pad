@@ -12,7 +12,7 @@
 #include <unistd.h>
 #include <errno.h>
 #include "padding.h"
-#include "common.h"
+#include "strbuf.h"
 #include "pad-seccomp.h"
 
 #define PACKAGE "pad"

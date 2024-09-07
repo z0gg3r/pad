@@ -4,7 +4,7 @@
 
 #ifndef PADDING_H
 #define PADDING_H
-#include "common.h"
+#include "strbuf.h"
 
 // input, size of result, result string, padding
 int pad_left(char *, size_t, struct strbuf *, char *);
