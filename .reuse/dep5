@@ -13,10 +13,10 @@ Files: pad.1 README.md
 Copyright: 2024 zocker <zocker@10zen.eu>
 License: GFDL-1.3-or-later
 
-Files: Makefile configs/*
+Files: Makefile configs/* run_tests.sh
 Copyright: 2024 zocker <zocker@10zen.eu>
 License: GPL-3.0-or-later
 
-Files: .gitignore seq_buf.authors
+Files: .gitignore seq_buf.authors tests/*
 Copyright: 2024 zocker <zocker@10zen.eu>
 License: CC0-1.0
