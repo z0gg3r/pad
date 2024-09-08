@@ -40,15 +40,25 @@ void strbuf_cat(struct strbuf *s, char *b)
 	strbuf_commit(s, b_size);
 }
 
+/**
+ * strbuf_str() - Return @s->@data as a nul-terminated string
+ *
+ * @s: The managed cstring
+ *
+ * Sometimes we need to operate on the whole string. This functions adds the
+ * final NUL byte after the string (wherever that may be) and then returns
+ * it.
+ *
+ * Returns: The managed string, with a final NUL byte
+ */
 char *strbuf_str(struct strbuf *s)
 {
 	if (!s->size)
 		return "";
 
-	if (strbuf_buffer_left(s))
-		s->data[s->len] = '\0';
-	else
-		s->data[s->size - 1] = '\0';
+	size_t data_end = min(s->size - 1, s->len);
+
+	s->data[data_end] = '\0';
 
 	return s->data;
 }
