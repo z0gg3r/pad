@@ -146,11 +146,9 @@ int ceildiv(int dividend, int divisor)
 int main(int argc, char **argv)
 {
 	int ws;
-#ifndef _PAD_DEBUG
 	ws = get_winsize();
 	if (enable_seccomp() != 0)
 		return 1;
-#endif
 	struct options *o = parse(argc, argv);
 
 	if (!o)
@@ -189,9 +187,6 @@ int main(int argc, char **argv)
 		pad_right(o->s, o->length, &s, o->padding_char);
 		break;
 	case MODE_CENTRE: {
-#if _PAD_DEBUG
-		ws = get_winsize();
-#endif
 		if (ws == -1) {
 			// There was some error during execution of get_winsize
 			// What went wrong was printed to stderr, so we just free
