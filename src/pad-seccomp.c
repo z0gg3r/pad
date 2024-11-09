@@ -7,6 +7,8 @@
 
 #include "pad-seccomp.h"
 
+#ifndef _PAD_DEBUG
+
 #include <seccomp.h> /* libseccomp */
 #include <sys/prctl.h> /* prctl */
 #include <stdlib.h>
@@ -73,3 +75,12 @@ out:
 	seccomp_release(ctx);
 	return -1;
 }
+
+#else
+
+int enable_seccomp(void)
+{
+	return 0;
+}
+
+#endif
